@@ -1,7 +1,7 @@
 remote_theme: ivnsam/minima
 minima:
   skin: dark
-title: ivnsam
+title: ivnsam title
 author:
   name: ivnsam
   email: <myemailaddress>
