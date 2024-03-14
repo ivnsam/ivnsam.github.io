@@ -1,4 +1,4 @@
-remote_theme: jekyll/minima
+remote_theme: ivnsam/minima
 minima:
   skin: dark
 title: ivnsam
