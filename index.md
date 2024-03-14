@@ -1,5 +1,5 @@
 ---
-title: ivnsam's pages
+title: ivnsam
 ---
 
 # home
