@@ -1,4 +1,4 @@
-<code>
+<script>
 console.log("hehe");
 console.log("helo.");
-</code>
+</script>
