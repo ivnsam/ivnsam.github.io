@@ -4,11 +4,11 @@
     <script>
         async function fetchRandIndex() {
             let resp = await fetch(window.location.origin);
-            resp = await rest.text();
-            return resp;
+            let text = await resp.text();
+            return text;
         }
         console.log("helo.");
-        document.getElementsByTagName("body")[0].innerHTML = fetchRandIndex();
+        document.getElementsByTagName("body")[0].innerHTML = await fetchRandIndex();
     </script>
 </body>
 </html>
