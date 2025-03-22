@@ -2,9 +2,13 @@
 <html lang="en">
 <body>
     <script>
-    console.log("helo.");
-    let resp = await fetch(window.location.origin)
-    document.getElementsByTagName("body")[0].innerHTML=await resp.text();
+        async function fetchRandIndex() {
+            let resp = await fetch(window.location.origin);
+            resp = await rest.text();
+            return resp;
+        }
+        console.log("helo.");
+        document.getElementsByTagName("body")[0].innerHTML = fetchRandIndex();
     </script>
 </body>
 </html>
