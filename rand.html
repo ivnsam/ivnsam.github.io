@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <script>
+    console.log("helo.");
+    let resp = await fetch(window.location.origin)
+    document.getElementsByTagName("body")[0].innerHTML=await resp.text();
+    </script>
+</body>
+</html>
