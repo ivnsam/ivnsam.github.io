@@ -1,28 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel='icon' type='image/x-icon' href='/favicon.gif' />
-    <style>
-    .loader {
-        border: 16px solid #f3f3f3; /* Light grey */
-        border-top: 16px solid #3498db; /* Blue */
-        border-radius: 50%;
-        width: 120px;
-        height: 120px;
-        animation: spin 2s linear infinite;
-      }
-      
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    </style>
+    <link rel='icon' type='image/gif' href='/favicon.gif' />
 </head>
 <body>
-    <div class="loader"></div>
     <script>
+        let pages = ["", "hello1", "hello2"]
         async function fetchRandIndex() {
-            let resp = await fetch(window.location.origin);
+            let randomUrl = pages[Math.floor(Math.random()*pages.length)];
+            let resp = await fetch(window.location.origin + '/' + randomUrl);
             let text = await resp.text();
             return text;
         }
