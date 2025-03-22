@@ -8,8 +8,7 @@
             return text;
         }
         console.log("helo.");
-        let newBody = await fetchRandIndex();
-        document.getElementsByTagName("body")[0].innerHTML = newBody;
+        document.getElementsByTagName("html")[0].innerHTML = fetchRandIndex().then(result => console.log(result));
     </script>
 </body>
 </html>
