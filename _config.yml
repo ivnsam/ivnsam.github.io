@@ -14,4 +14,4 @@ author:
 github_username: ivnsam
 # site_favicon: favicon.png
 
-# {% include head_custom.html %}
+{% include custom_head_favicon.html %}
