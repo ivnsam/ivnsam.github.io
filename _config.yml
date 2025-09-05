@@ -8,3 +8,5 @@ author:
   email: iwansam1996@gmail.com
 github_username: ivnsam
 # site_favicon: favicon.png
+
+# {% include head_custom.html %}
