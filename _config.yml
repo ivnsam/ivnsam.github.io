@@ -1,7 +1,12 @@
 # remote_theme: ivnsam/minima
-theme: jekyll-theme-minima
+remote_theme: jekyll/minima
+# plugins:
+#   - jekyll-remote-theme
 minima:
-  skin: dark
+  skin: auto
+# theme: jekyll-theme-minima
+# minima:
+#   skin: dark
 title: ivnsam's pages
 author:
   name: ivnsam
