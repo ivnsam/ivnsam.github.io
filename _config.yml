@@ -1,17 +1,8 @@
-# remote_theme: ivnsam/minima
 remote_theme: jekyll/minima
-# plugins:
-#   - jekyll-remote-theme
 minima:
   skin: auto
-# theme: jekyll-theme-minima
-# minima:
-#   skin: dark
 title: ivnsam's pages
 author:
   name: ivnsam
   email: iwansam1996@gmail.com
 github_username: ivnsam
-# site_favicon: favicon.png
-
-{% include custom_head_favicon.html %}
