@@ -1,10 +1,8 @@
 ---
-title: home
+title: Home
 ---
 
-my name is Ivan and I'm devops and IT engineer
-
-get my random hello page <a href="/rand.html" >here</a>
+My name is Ivan and I'm IT engineer 🧑‍💻
 
 <script>
     console.log("hello from \"home\"")
