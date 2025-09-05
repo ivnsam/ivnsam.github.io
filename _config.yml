@@ -1,6 +1,6 @@
 # remote_theme: ivnsam/minima
 # theme: minimal
-theme: dinky
+theme: jekyll-theme-dinky
 minima:
   skin: dark
 title: ivnsam's pages
