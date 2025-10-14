@@ -1,33 +1,6 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="utf-8" />
-<title>Универсальный RSS/Atom-ридер</title>
-<!-- Внешние зависимости: qrcode.min.js и jsQR.js должны быть рядом -->
-<script src="qrcode.min.js"></script>
-<script src="jsQR.js"></script>
-<style>
-  body{font-family:sans-serif;max-width:900px;margin:18px auto;padding:6px}
-  input,button,select{padding:6px;font-size:14px}
-  #urlInput,#proxyInput,#newFeedName,#newFeedUrl{width:70%}
-  #feedList,#proxySettings{margin:10px 0;padding:10px;border:1px dashed #ccc;background:#fafafa}
-  .feed-item{margin:6px 0;padding:4px}
-  .spoiler{background:#eee;padding:6px;margin:6px 0;cursor:pointer;font-weight:700}
-  .spoiler-content{display:none;margin-top:6px}
-  #rssFeed{list-style:none;padding:0;margin-top:10px}
-  #rssFeed li{margin:8px 0;padding:8px;border-bottom:1px solid #eee}
-  .error{color:#b00}.success{color:green}.loading{color:#666;font-style:italic}
-  .controls{margin:8px 0;display:flex;flex-wrap:wrap;gap:6px}
-  /* модальные минималистично */
-  .modal { position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center; }
-  .box { background:#fff;padding:12px;border-radius:6px; width:90%; max-width:480px; }
-  #qr { text-align:center; margin:6px 0; }
-  video{width:100%;height:auto;background:#000}
-  canvas{display:none}
-</style>
-</head>
-<body>
-<h2>Универсальный RSS/Atom-ридер</h2>
+---
+title: Универсальный RSS/Atom-ридер
+---
 
 <!-- Управление подписками -->
 <div id="feedList">
@@ -639,5 +612,3 @@ function importOpmlText(opmlText){
 })();
 
 </script>
-</body>
-</html>
