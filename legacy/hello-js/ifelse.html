@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="styles/pages.css">
+	<link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+	<title>Условные операторы: if, "?"</title>
+</head>
+<body>
+	<a class="homeB" href="http://r90625ip.beget.tech/"><img class="homeButton" src="img/home.png" height="100px"><img class="homeButtonWhite" src="img/homeHover.png" height="100px"></a>
+	<a class="homeB" href="index-hello-js.html">Назад</a>
+	
+	<ul>
+		<li>
+			<h2>Оператор if-else</h2>
+			<p>
+				Оператор if() выполняет команду <br>
+				<code>
+					year = 2007; <br>
+					if (year == 2007) alert("2007 year back!"); <br>
+				</code>
+				или блок кода <br>
+				<code>
+					year = 2007; <br>
+					if (year == 2007) { <br>
+					    alert("2007 year back!"); <br>
+					    alert("да здравствует машина времени!"); <br>
+				} <br>
+				</code>
+				когда в скобках значение true <br>
+			</p>
+			<p>
+				Блок else - это необязательный блок, код в котором будет выполнен, если условие в скобках if () ложно <br>
+				Для задания нескольких условий можно использовать конструкцию else if ()
+			</p>
+		</li>
+		<li>
+			<h2>Условный оператор "?"</h2>
+			<p>
+				Данный оператор служит для проверки условия при присвоении переменной некоторого значения <br>
+				<code>
+					let result = условие ? значение1 : значение2; <br>
+					let accessAllowed = (age>21) ? true : false; <br>
+				</code>
+				Если условие верно, присваивается значение1, иначе значение2 <br>
+				Оператор "?" можно использовать и как замену if, однако читаемость кода при этом ухудшается, поэтому делать этого не рекомендуется
+			</p>
+		</li>
+	</ul>
+</body>
+</html>

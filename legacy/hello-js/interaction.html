@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="styles/pages.css">
+	<link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+	<title>Взаимодействие: alert, prompt, confirm</title>
+</head>
+<body>
+	<a class="homeB" href="http://r90625ip.beget.tech/"><img class="homeButton" src="img/home.png" height="100px"><img class="homeButtonWhite" src="img/homeHover.png" height="100px"></a>
+	<a class="homeB" href="index-hello-js.html">Назад</a>
+	
+	<p>Все эти три способа взаимодействия с пользователем вызывают появление модальных окон. Модальное означает то, что пользователь не может взаимодействовать с интерфейсом остальной части страницы, пока взаимодействует с данным окном</p>
+	<ul>
+		<li>
+			<h2>alert</h2>
+			<p>
+				Синтаксис: <br>
+				<code>alert(message);</code> <br>
+				Данный код отобразит окно с сообщением message и кнопкой OK
+			</p>
+		</li>
+		<li>
+			<h2>prompt</h2>
+			<p>
+				Синтаксис: <br>
+				<code>result = prompt(title, [default]);</code> <br>
+				Здесь title - текст, отображаемый в окне, а default - необязательный параметр, устанавливающий начальный текст в поле ввода <br>
+				Данный код отобразит окно с полем для ввода текста и кнопками OK и Отмена, а затем вернет текст, введенный пользователем, если он нажмет OK, либо null, если ввод будет отменен <br>
+				Для IE лучше всегда устанавливать default, иначе IE установит значение "undefined"
+			</p>
+		</li>
+		<li>
+			<h2>confirm</h2>
+			<p>
+				Синтаксис: <br>
+				<code>result = confirm(question);</code>
+				Данный код отобразит окно с текстом вопроса question и кнопками OK и Отмена, а затем вернет true, если нажата кнопка OK или false в остальных случаях
+			</p>
+		</li>
+	</ul>
+</body>
+</html>

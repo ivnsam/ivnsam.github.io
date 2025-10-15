@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="styles/pages.css">
+	<link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+	<title>Введение</title>
+	<style type="text/css">
+		main{
+			margin: 0 15px;
+		}
+	</style>
+</head>
+<body>
+	<a class="homeB" href="http://r90625ip.beget.tech/"><img class="homeButton" src="img/home.png" height="100px"><img class="homeButtonWhite" src="img/homeHover.png" height="100px"></a>
+	<a class="homeB" href="index-hello-js.html">Назад</a>
+	
+	<main>
+		<h2>Подключение скриптов</h2>
+		<ul>
+			<li>
+				Можно написать скрипт прямо в html коде в тэге: &lt;script&gt;&lt;/script&gt;
+			</li>
+			<li>
+				Можно подключить как отдельынй файл скрипта: &lt;script src="/path/to/script.js"&gt;&lt;/script&gt;
+				Указывают или абсолютный или относительный путь до скрипта
+			</li>
+		</ul>
+		<p>В начале каждого скрипта надо писать "use strict" или 'use strict'. Эта директива включает "современный" или "строгий" режим. Писать use strict, чтобы он заработал, нужно только в первой строке. Над ним могут быть только комментарии.</p>
+		<!-- <script src="./js/variables.js"></script> -->
+		<!-- <script src="./js/alert.js"></script> -->
+		<h2>Переменные</h2>
+		<p>
+		Переменные создаются с помощью ключевого слова <i>let</i> <br>
+		<code>let message;</code> <br>
+		После создания можно присвоить переменной значение <br>
+		<code>message="some text"</code> <br>
+		Вывести значение переменно можно, например, так <br>
+		<code>alert(message);</code>
+		</p>
+		<h2>Имена переменных</h2>
+		<p>
+		Имена переменных могут содержать только буквы, цифры, символы $ и _ <br>
+		Первый символ не должен быть цифрой <br>
+		Если имя содержит несколько слов, используется верблюжья нотация, например veryLongNameOfVariable <br>
+		Названия переменных чувствительны к регистру. variable и Variable это две разных переменных <br>
+		Существует список зарезервированных слов, которые использовать нельзя
+		</p>
+		<h2>Константы</h2>
+		<p>
+		Константы создаются с помощью ключевого слова const <br>
+		Имена в верхнем регистре принято давать тем константам, которые известны до начала исполнения скрипта, но трудно запоминаемы <br>
+		<code>const COLOR_ORANGE="#FF7F00";</code>
+		</p>
+	</main>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="styles/pages.css">
+	<link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+	<title>Методы объекта, "this"</title>
+</head>
+<body>
+	<a class="homeB" href="http://r90625ip.beget.tech/"><img class="homeButton" src="img/home.png" height="100px"><img class="homeButtonWhite" src="img/homeHover.png" height="100px"></a>
+	<a class="homeB" href="index-hello-js.html">Назад</a>
+
+	<ul>
+		<li>
+			<h2>Методы объекта</h2>
+			<p>
+				Чтобы объявить метод объекта, т.е. то, что объект "умеет" делать, есть два способа. Первый - это использовать Function Expression чтобы создать функцию и присвоить ее свойству объекта. Второй - заранее объявить функцию, а затем использовать ее в качестве метода. <br>
+				Синтаксис через Function Expression. <br>
+				<code>
+					let user = { <br>
+						name: "John", <br>
+						age: 24, <br>
+					}; <br> <br>
+
+					user.sayHi = function() { <br>
+						alert("Hi!"); <br>
+					}; <br> <br>
+
+					user.sayHi(); <br> <br>
+				</code>
+				Синтаксис через использование отдельной функции в качестве метода. <br>
+				<code>
+					let user = { <br>
+						//... <br>
+					}; <br> <br>
+
+					//сначала объявление <br>
+					function sayHi() { <br>
+						alert("Hi!"); <br>
+					}; <br> <br>
+
+					//затем добавление в качестве метода <br>
+					user.sayHi = sayHi; <br> <br>
+
+					//теперь использование <br>
+					user.sayHi(); <br> <br>
+				</code>
+				Существует сокращенный синтаксис объявления метода объекта через Function Expression. Хоть эти две записи не совсем эквивалентны, зачастую предпочтительнее использовать сокрщенную форму.<br>
+				<code>
+					let user = { <br>
+						name: "John", <br>
+						age: 24, <br>
+						sayHi() { <br>
+							alert("Hi!"); <br>
+						}, <br>
+					}; <br> <br>
+				</code>
+			</p>
+		</li>
+		<li>
+			<h2>Ключевое слово "this" в методах</h2>
+			<p>
+				Данное ключевое слово используется методом для доступа к свойству внутри объекта. <br>
+				<code>
+					let user = { <br>
+						name: "John", <br>
+						age: 24, <br> <br>
+
+						sayHi() { <br>
+							//"this" - это текущий объект <br>
+							alert(this.name); <br>
+						}, <br>
+					}; <br> <br>
+
+					user.sayHi(); // John <br> <br>
+				</code>
+				"this" не является фиксированным, т.е. значение this вычисляется непосредственно во время выполнения кода и зависит от контекста. <br>
+				<code>
+					let user = {name: "User",}; <br>
+					let admin = {name: "Admin",}; <br> <br>
+
+					function sayName() { <br>
+						alert(this.name); <br>
+					}; <br> <br>
+
+					user.func = sayHi; <br>
+					admin.func = sayHi; <br> <br>
+
+					//в данном случае this в каждой строке имеют разные значения <br>
+					user.func(); //User, this = user <br>
+					admin.func(); //Admin, this = admin <br> <br>
+
+					//не важно как вызывается метод, this работает и при вызове через скобки <br>
+					admin["func"];// Admin <br> <br>
+				</code>
+			</p>
+			<p>
+				При использовании this в стрелочных функциях его значение берется из внешней функции. <br>
+			</p>
+		</li>
+	</ul>
+</body>
+</html>

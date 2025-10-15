@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="styles/pages.css">
+	<link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+	<title>Конструкторы, создание объектов через new</title>
+</head>
+<body>
+	<a class="homeB" href="http://r90625ip.beget.tech/"><img class="homeButton" src="img/home.png" height="100px"><img class="homeButtonWhite" src="img/homeHover.png" height="100px"></a>
+	<a class="homeB" href="index-hello-js.html">Назад</a>
+
+	<ul>
+		<li>
+			<h2>Функция-конструктор</h2>
+			<p>
+				Функции-конструкторы являются обычными функциями, с помощью которых можно создавать большое количество однотипных объектов. Существует два соглашения: <br>
+				1. Имя функции-конструктора должно начинаться с большой буквы; <br>
+				2. Функция-конструктор должна вызываться при помощи оператора new. <br>
+				<code>
+					function User(name) { <br>
+						this.name = name; <br>
+						this.isAdmin = false; <br>
+				} <br> <br>
+
+				let user = new User("John"); <br> <br>
+
+				alert(user.name); //John <br>
+				alsert(user.isAdmin); //false <br> <br>
+				</code>
+				Когда функция вызывается как new User(...), происходи стледующее: <br>
+				1. Создается новый пустой объект и он присваивается this; <br>
+				2. Выполняется код функции; <br>
+				3. Возвращается значение this. <br> <br>
+
+				Помимо свойств в конструкторе объекта можно добавлять и методы объекта.
+				<code>
+					function User(name) { <br>
+						this.name = name; <br> <br>
+
+						this.sayHi = function() { <br>
+							alert( "My name is " + this.name ); <br>
+					}; <br> <br>
+
+						let user = new User("User"); <br>
+						user.sayHi(); //My name is User <br>
+					}
+				</code>
+			</p>
+		</li>
+	</ul>
+</body>
+</html>

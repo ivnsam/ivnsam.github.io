@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="styles/pages.css">
+	<link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+	<title>Функциональные выражения</title>
+</head>
+<body>
+	<a class="homeB" href="http://r90625ip.beget.tech/"><img class="homeButton" src="img/home.png" height="100px"><img class="homeButtonWhite" src="img/homeHover.png" height="100px"></a>
+	<a class="homeB" href="index-hello-js.html">Назад</a>
+	
+	<ul>
+		<li>
+			<h2>Функции-выражения</h2>
+			<p>
+				Синтаксис <br>
+				<code>
+					let имя = function() { <br>
+						...тело... <br>
+					}; <br>
+
+					let some = имя; <br>
+					имя(); <br>
+					some(); <br>
+				</code>
+				Здесь фукнция создается явно и ей, как переменной, присваивается значение. В конце объявления такой переменной необходима точка с запятой (;). <br>
+				В JavaScript все функции это значения, поэтому их можно присваивать, выводить как и переменные. Можно даже скопировать функцию, а затем вызвать ее, работать будут обе.<br>
+			</p>
+		</li>
+		<li>
+			<h2>Функции-коллбэки</h2>
+			<p>
+				Синтаксис
+				<code>
+					function ask(question, no, yes) { <br>
+						if (confirm(question)) yes() <br>
+						else no(); <br>
+					} <br>
+
+					function showOK() { <br>
+						alert('OK'); <br>
+					} <br>
+
+					function showCANCEL() { <br>
+						alert('CANCEL'); <br>
+					} <br>
+
+					ask('ok?', showCANCEL, showOK); <br>
+				</code>
+			</p>
+			<p>
+				Здесь функция задаст вопрос и в зависимости от ответа выполнится первая или вторая функция, переданная при вызове ask('ok?', showCANCEL, showOK). Аргументы в такой функции называются колбэк-функциями или просто колбэками. Основная идея заключается в том, что мы передаем функцию в аргументе и ожидаем, что когда-нибудь она вызовется обратно.<br>
+			</p>
+			<p>
+				Этот пример можно переписать еще короче, используя <b>анонимные функции</b>. <br>
+				<code>
+					function ask(question, no, yes) { <br>
+						if (confirm(question)) yes() <br>
+						else no(); <br>
+					} <br>
+
+					ask( <br>
+						'ok?', <br>
+						function() {alert('OK'); }, <br>
+						function() {alert('CANCEL'); } <br>
+					) <br>
+				</code>
+				Здесь анонимными функции объявляются прямо в вызове ask() и не имеют названия, поэтому и называются анонимными. <br>
+			</p>
+		</li>
+	</ul>
+</body>
+</html>

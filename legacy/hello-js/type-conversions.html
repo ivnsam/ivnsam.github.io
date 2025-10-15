@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="styles/pages.css">
+	<link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+	<title>Преобразование типов</title>
+</head>
+<body>
+	<a class="homeB" href="http://r90625ip.beget.tech/"><img class="homeButton" src="img/home.png" height="100px"><img class="homeButtonWhite" src="img/homeHover.png" height="100px"></a>
+	<a class="homeB" href="index-hello-js.html">Назад</a>
+	
+	<ul>
+		<li>
+			<h2>Строковое преобразование</h2>
+			<p>
+				Все представляется в виде строки <br>
+				Конструкция <code>String(value);</code> преобразует значение value к строковому типу <br>
+				Так false станет "false", а null станет "null"
+			</p>
+		</li>
+		<li>
+			<h2>Численное преобразование</h2>
+				<p>
+				Происходит в математических функциях и выражениях, например при делении <br>
+				<code>alert("6" / "2");</code> в результате выведет 3, так как все преобразовалось к числовому типу <br>
+				<code>alert(4+5+"px");</code> в результате выведет "9px", так как первым действием произвелось сложение числе, а затем конкатенация со строкой <br>
+				Явное преобразование выглядит так <code>Number(value);</code>
+				Правила преобразования следующие <br>
+				<table border="1">
+					<tr>
+						<th>Значение</th>
+						<th>Результат преобразования</th>
+					</tr>
+					<tr>
+						<td>undefined</td>
+						<td>NaN</td>
+					</tr>
+					<tr>
+						<td>null</td>
+						<td>0</td>
+					</tr>
+					<tr>
+						<td>true / false</td>
+						<td>1 / 0</td>
+					</tr>
+					<tr>
+						<td>string</td>
+						<td>Пробелы по края строки обрезаются, далее, если строка пустая, то 0, если там есть число, то число, если там есть не число/не только число, то NaN</td>
+					</tr>
+				</table>
+				Сложение объединяет строки, если в выражении есть хотя бы одно слагаемое в строковом виде <br>
+				<code>alert("1" + 2);</code> выведет 12, так как все преобразуется к строке
+			</p>
+		</li>
+		<li>
+			<h2>Логическое преобразование</h2>
+			<p>
+				Преобразует все к логическому типу <br>
+				Явное преобразование делается так: <code>Boolean(value);</code> <br>
+				Правила преобразования следующие: 0, пустая строка, null, undefined и NaN преобразуются в false, остальное в true <br>
+				Однако строка "0" превратится в true, так же как и строка с пробелом " ", потому что эти строки считаются не пустыми
+			</p>
+		</li>
+	</ul>
+</body>
+</html>

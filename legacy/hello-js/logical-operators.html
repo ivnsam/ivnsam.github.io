@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="styles/pages.css">
+	<link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+	<title>Логические операторы</title>
+</head>
+<body>
+	<a class="homeB" href="http://r90625ip.beget.tech/"><img class="homeButton" src="img/home.png" height="100px"><img class="homeButtonWhite" src="img/homeHover.png" height="100px"></a>
+	<a class="homeB" href="index-hello-js.html">Назад</a>
+	
+	<ul>
+		<li>
+			<h2>|| оператор ИЛИ</h2>
+			<p>
+				Обычно оператор ИЛИ используется для манипулирования булевыми значениями <br>
+				Таблица истинности
+				<table border="1px">
+					<tr>
+						<th>a</th>
+						<th>b</th>
+						<th>a || b</th>
+					</tr>
+					<tr>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>0</td>
+						<td>1</td>
+					</tr>
+					<tr>
+						<td>0</td>
+						<td>1</td>
+						<td>1</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+					</tr>
+				</table>
+				Если значение не логического типа, оно к нему приводится, однако возвращено будет значение, а не результат преобразования, которое первым оказалось правдивым (true), если такого не оказалось, будет возвращено последнее значение в выражении <br>
+				Этой особенностью можно воспользоваться для нахождения первого истинного значения <br>
+				<code>
+					result = value1 || value2 || value3; <br>
+				</code>
+				Также это позволяет делать сокращенные вычисления, т.е. вычислять значение какого-либо выражения, только при определенных условиях <br>
+				<code>
+					let x; <br>
+					true || (x = 22+9); <br>
+					alert(x); //undefined <br>
+
+					false || (x = 22+9); <br>
+					alert(x); //31 <br>
+				</code>
+			</p>
+		</li>
+		<li>
+			<h2>&& (оператор И)</h2>
+			<p>
+				Оператор И используется аналогично ИЛИ <br>
+				Таблица истинности
+				<table border="1px">
+					<tr>
+						<th>a</th>
+						<th>b</th>
+						<th>a && b</th>
+					</tr>
+					<tr>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>0</td>
+						<td>0</td>
+					</tr>
+					<tr>
+						<td>0</td>
+						<td>1</td>
+						<td>0</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+					</tr>
+				</table>
+				Если значение не логического типа, оно к нему приводится, однако возвращено будет значение, а не результат преобразования, которое первым оказалось ложным (false), если такого не оказалось, будет возвращено последнее значение в выражении <br>
+				Этой особенностью можно воспользоваться для нахождения первого ложного значения <br>
+			</p>
+		</li>
+		<li>
+			<h2>! (оператор НЕ)</h2>
+			<p>
+				Оператор приводит аргумент к логическому типу, а затем возвращает его обратное значение <br>
+				<code>
+					result = !value; <br>
+				</code>
+				Двойное НЕ можно использовать вместо Boolean() <br>
+				<code>
+					result = !!value; <br>
+				</code>
+			</p>
+		</li>
+	</ul>
+</body>
+</html>

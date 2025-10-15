@@ -1,0 +1,33 @@
+.menu {
+	height: calc(50vh - 1em);
+	width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.card {
+	width: 30%;
+	height: 100pt;
+	margin: 10px;
+	background-color: cyan;
+	font-size: 30px;
+}
+
+.card_link {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-decoration: none;
+	color: black;
+}
+
+.card:hover {
+	background-color: orange;
+}
+
+.card_link:hover {
+	color: white;
+}

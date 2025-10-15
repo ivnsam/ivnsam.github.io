@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анимация появления подписи</title>
+    <style>
+        div {
+            width: 400px;
+            height: 100px;
+            position: relative;
+        }
+        main {
+            display: flex;
+        }
+        .box1 {
+            background-color: #a3b21c;
+        }
+        div::after {
+            content: attr(box-title);
+            background-image: linear-gradient(rgba(255, 0, 0, 0.5), blue);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            color: #eee;
+            opacity: 0;
+            transition: opacity .5s ease-in-out;
+        }
+        div:hover::after {
+            opacity: 1;
+        }
+        .box2 {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="box1" box-title="title for box #1">lorem</div>
+        <div class="box2" box-title="title for box #2">ipsum</div>
+    </main>
+</body>
+</html>
