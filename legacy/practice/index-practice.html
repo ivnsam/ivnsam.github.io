@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+	<link rel="stylesheet" href="index-practice.css">
+	<title>My Practice</title>
+	<script src="deepCopy/deepCopy.js"></script>
+	<script src="calc/operations.js"></script>
+</head>
+<body>
+	
+	<div class="script-block">
+		<div class="separator">
+			<div class="separator_line"></div>
+			<div class="separator_text">Глубокое копирование</div>
+			<div class="separator_line"></div>
+		</div>
+		<button class="script-block_button" onclick="deepCopy()">Пример выполнения скрипта</button>
+		<p class="about">Функция <i>copyObject(obj)</i> произоводит глубокое копирование объекта и возвращает копию данного объекта. Также в скрипте есть функция <i>isObject(val)</i>, которая с помощью <i>Object.prototype.toString.call()</i> проверяет переданное ей значение на то, объект ли это. Кнопка "Пример выполнения скрипта" выполняет функцию <i>deepCopy()</i>, которая служит для примера и выводит в консоль оригинальный объект и его копию.</p>
+	</div>
+
+	<div class="script-block">
+		<div class="separator">
+			<div class="separator_line"></div>
+			<div class="separator_text">Калькулятор</div>
+			<div class="separator_line"></div>
+		</div>
+		<div class="operation_pair">
+			<button class="script-block_button" onclick="addition()">+</button>
+			<button class="script-block_button" onclick="substraction()">-</button>
+		</div>
+		<div class="operation_pair">
+			<button class="script-block_button" onclick="multiplication()">*</button>
+			<button class="script-block_button" onclick="division()">/</button>
+		</div>
+		<p class="about">Простой калькулятор, ввод сделан через prompt(), вывод сделан через alert().</p>
+	</div>
+
+	<div class="script-block">
+		<div class="separator">
+			<div class="separator_line"></div>
+			<div class="separator_text">Блокнот</div>
+			<div class="separator_line"></div>
+		</div>
+		<a href="editor/editor.html">Блокнот</a>
+		<p class="about">Простой текстовый редактор типа блокнота. Сохраняет текст даже при выключении компьютера/телефона. Текст хранится локально на устройстве в памяти браузера. </p>
+	</div>
+
+</body>
+</html>

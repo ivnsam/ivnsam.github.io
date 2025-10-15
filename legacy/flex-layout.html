@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Макет на flexbox</title>
+    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/latest/normalize.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-size: 20px;
+        }
+        main {
+            display: flex;
+            height: calc(100vh - 20vh);
+        }
+        header, footer {
+            display: block;
+            height: 10vh;
+            background-color: coral;
+        }
+        nav, aside {
+            flex-grow: 0;
+            flex-basis: 10vw;
+            background-color: aquamarine;
+        }
+        article {
+            flex-grow: 1;
+            background-color: lavender;
+        }
+    </style>
+</head>
+<body>
+    <header>Header</header>
+    <main>
+        <nav>Navigation</nav>
+        <article>content</article>
+        <aside>Sidebar</aside>
+    </main>
+    <footer>Footer</footer>
+</body>
+</html>

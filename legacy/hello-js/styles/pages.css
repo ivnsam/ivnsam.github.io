@@ -1,0 +1,25 @@
+.homeB .homeButtonWhite{
+	display: none;
+}
+
+.homeB:hover .homeButton{
+	display: none;
+}
+
+.homeB:hover .homeButtonWhite{
+	display: inline-flex;
+	background: orange;
+}
+
+.homeB{
+    color: cyan;
+    font-size: xxx-large;
+    font-weight: bolder;
+    font-family: system-ui;
+    font-variant-caps: all-small-caps;
+    text-decoration: none;
+}
+
+.homeB:hover{
+    color: orange;
+}

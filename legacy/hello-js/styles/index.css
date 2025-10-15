@@ -1,0 +1,66 @@
+body {
+	display: flex;
+}
+
+.kek {
+	display: flex;
+}
+
+.menu_left{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-self: flex-start;
+	list-style: none;
+	text-decoration: none;
+	padding: 0;
+	margin: 0;
+}
+
+.submenu{
+	display: none;
+	list-style-type: none;
+	padding-left: 0;
+}
+
+.submenu_check{
+	display: none;
+}
+
+.submenu_check:checked + .submenu{
+	display: block;
+}
+
+a{
+	text-decoration: none;
+}
+
+.menu_link {
+	box-sizing: content-box;
+	color: black;
+	background: cyan;
+	padding: 5px;
+	padding-left: 15px;
+}
+
+/*если поднять выше .menu_link, то перекроется padding-left*/
+.submenu_link{
+	padding-left: 45px;
+}
+
+.menu_link:hover {
+	background: orange;
+	color: white;
+}
+
+.menu_rigth{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-self: flex-start;
+	text-align: right;
+	list-style: none;
+	text-decoration: none;
+	padding: 0;
+	margin: 0;
+}

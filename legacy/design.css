@@ -1,0 +1,40 @@
+body {
+	margin: 0;
+}
+
+.slogan_left {
+	margin: 0;
+	font-size: 100px;
+}
+
+.slogan_right {
+	margin: 0;
+	font-size: 100px;
+	text-align: right;
+}
+
+.slogan {
+	display: flex;
+	padding: 0px 40px 0px 40px;
+	justify-content: space-between;
+}
+
+.zdes, .budet, .dizajn {
+	display: grid;
+}
+
+.zdes {
+	color: red;
+}
+
+.budet {
+	color: blue;
+}
+
+.dizajn {
+	color: green;
+}
+
+header {
+	background-color: wheat;
+}
