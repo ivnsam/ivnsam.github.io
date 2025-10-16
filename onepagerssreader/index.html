@@ -339,8 +339,6 @@ document.getElementById('importFile').addEventListener('change', async function(
   if(outlines.length === 0){ alert('В файле не найдено ни одной RSS-ленты. Проверьте формат OPML.'); return; }
   let imported=0, already=0, invalid=0;
   const invalidUrls=[];
-  const statusEl = document.getElementById('status');
-  statusEl.innerHTML = `<span class="loading">Проверка и импорт ${outlines.length} лент...</span>`;
   addButton.disabled = true;
   async function isValidFeed(url){
     try{
@@ -358,6 +356,8 @@ document.getElementById('importFile').addEventListener('change', async function(
     }catch(e){ return false; }
   }
   for(let i=0;i<outlines.length;i++){
+    const statusEl = document.getElementById('status');
+    statusEl.innerHTML = `<span class="loading">Проверка и импорт ${i} из ${outlines.length} лент...</span><span class="loading"> (Не обновляйте страницу, прогресс будет потерян.)</span>`;
     const outline = outlines[i];
     const name = outline.getAttribute('text') || outline.getAttribute('title') || 'Без названия';
     const url = outline.getAttribute('xmlUrl') || outline.getAttribute('url') || '';
