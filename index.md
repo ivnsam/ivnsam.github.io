@@ -10,7 +10,7 @@ My name is Ivan and I'm IT engineer 🧑‍💻
 
 <ul>
   {% for page in site.html_files %}
-      page
+      "{{ page }}"
       <li><a href="{{ page.path }}">{{ page.title | default: page.path }}</a></li>
 
   {% endfor %}
