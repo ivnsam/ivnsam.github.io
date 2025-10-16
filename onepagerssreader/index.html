@@ -175,38 +175,6 @@ function resetState(){
 function setValid(title){ nameInput.value=title; nameInput.disabled=false; status.innerHTML=`<span class="success">Лента найдена: "${escapeHtml(title)}"</span>`; addButton.disabled=false; }
 function setError(msg){ status.innerHTML=`<span class="error">Ошибка: ${escapeHtml(msg)}</span>`; addButton.disabled=true; nameInput.disabled=true; }
 
-/* проверка URL ленты (использует тот же прокси) */
-async function validateFeedUrl(url){
-  status.innerHTML = '<span class="loading">Проверка ленты...</span>';
-  addButton.disabled = true;
-  const useProxy = document.getElementById('proxyEnabled').checked;
-  const proxy = document.getElementById('proxyInput').value.trim();
-  let finalUrl = url;
-  if(useProxy && proxy){
-    if(proxy === 'https://allorigins.win/raw?url=') finalUrl = proxy + encodeURIComponent(url);
-    else finalUrl = proxy + url;
-  }
-  try{
-    const resp = await fetch(finalUrl);
-    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const text = await resp.text();
-    const xml = new DOMParser().parseFromString(text, 'text/xml');
-    const parserError = xml.querySelector('parsererror');
-    if(parserError) throw new Error('Недопустимый XML: возможно, это не RSS/Atom');
-    const isAtom = xml.querySelector('feed') !== null;
-    const isRss = xml.querySelector('rss') !== null || xml.querySelector('channel') !== null;
-    if(!isAtom && !isRss) throw new Error('Не найдено RSS или Atom: проверьте URL');
-    let titleNode = isAtom ? xml.querySelector('feed > title') : (xml.querySelector('channel > title') || xml.querySelector('rss > channel > title'));
-    const title = titleNode ? titleNode.textContent.trim() : 'Без названия';
-    setValid(title);
-    currentValidUrl = url;
-  }catch(err){
-    console.error('Ошибка проверки ленты:', err);
-    setError(err.message || err);
-    currentValidUrl = null;
-  }
-}
-
 /* авто-проверки */
 urlInput.addEventListener('blur', ()=>{ const u = urlInput.value.trim(); if(!u){ resetState(); return; } validateFeedUrl(u); });
 urlInput.addEventListener('paste', ()=>{ setTimeout(()=>{ const u=urlInput.value.trim(); if(u) validateFeedUrl(u); }, 10); });
@@ -222,47 +190,127 @@ function addFeed(){
   urlInput.value=''; resetState();
 }
 
-/* загрузка и парсинг ленты (без изменений) */
-async function loadFeedContent(url){
-  const feedList = document.getElementById('rssFeed');
-  feedList.innerHTML = '<li>Загрузка...</li>';
+// Проверка URL и получение названия (RSS / Atom / JSON Feed)
+async function validateFeedUrl(url) {
+  status.innerHTML = '<span class="loading">Проверка ленты...</span>';
+  status.className = 'loading';
+  addButton.disabled = true;
+
   const useProxy = document.getElementById('proxyEnabled').checked;
   const proxy = document.getElementById('proxyInput').value.trim();
   let finalUrl = url;
-  if(useProxy && proxy){
-    if(proxy === 'https://allorigins.win/raw?url=') finalUrl = proxy + encodeURIComponent(url);
-    else finalUrl = proxy + url;
+
+  if (useProxy && proxy)
+    finalUrl = proxy === 'https://allorigins.win/raw?url=' ? proxy + encodeURIComponent(url) : proxy + url;
+
+  try {
+    const response = await fetch(finalUrl);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const contentType = response.headers.get('content-type') || '';
+
+    let title = null;
+
+    if (contentType.includes('application/feed+json') || contentType.includes('json')) {
+      // --- JSON Feed ---
+      const json = await response.json();
+      if (!json.items) throw new Error('Не найдено поле items');
+      title = json.title || 'Без названия';
+    } else {
+      // --- RSS / Atom XML ---
+      const xmlText = await response.text();
+      const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+      if (xml.querySelector('parsererror')) throw new Error('Недопустимый XML');
+
+      const isAtom = xml.querySelector('feed');
+      const isRss = xml.querySelector('rss, channel');
+      if (!isAtom && !isRss) throw new Error('Не найдено RSS, Atom или JSON Feed');
+
+      title = (isAtom ? xml.querySelector('feed>title') : xml.querySelector('channel>title'))?.textContent?.trim() || 'Без названия';
+    }
+
+    setValid(title);
+    currentValidUrl = url;
+  } catch (e) {
+    console.error('Ошибка проверки ленты:', e);
+    setError(e.message);
+    currentValidUrl = null;
   }
-  try{
-    const r = await fetch(finalUrl);
-    if(!r.ok) throw new Error(`HTTP ${r.status}`);
-    const xmlText = await r.text();
-    const xmlDoc = new DOMParser().parseFromString(xmlText, 'text/xml');
-    if(xmlDoc.querySelector('parsererror')) throw new Error('Ошибка парсинга XML');
-    const isAtom = xmlDoc.querySelector('feed') !== null;
-    const isRss = xmlDoc.querySelector('rss') !== null || xmlDoc.querySelector('channel') !== null;
-    let items = [], titleNode = null;
-    if(isAtom){ items = xmlDoc.querySelectorAll('entry'); titleNode = xmlDoc.querySelector('feed > title'); }
-    else if(isRss){ items = xmlDoc.querySelectorAll('item'); titleNode = xmlDoc.querySelector('channel > title') || xmlDoc.querySelector('rss > channel > title'); }
-    else throw new Error('Неизвестный формат: ожидается RSS или Atom');
-    const feedTitle = titleNode ? titleNode.textContent : 'Без названия';
+}
+
+// Загрузка и парсинг RSS / Atom / JSON Feed
+async function loadFeedContent(url) {
+  const feedList = document.getElementById('rssFeed');
+  feedList.innerHTML = '<li>Загрузка...</li>';
+
+  const useProxy = document.getElementById('proxyEnabled').checked;
+  const proxy = document.getElementById('proxyInput').value.trim();
+  let finalUrl = url;
+
+  if (useProxy && proxy)
+    finalUrl = proxy === 'https://allorigins.win/raw?url=' ? proxy + encodeURIComponent(url) : proxy + url;
+
+  try {
+    const response = await fetch(finalUrl);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const contentType = response.headers.get('content-type') || '';
+    feedList.innerHTML = '';
+
+    // JSON Feed
+    if (contentType.includes('application/feed+json') || contentType.includes('json')) {
+      const json = await response.json();
+      const feedTitle = json.title || 'Без названия';
+      const items = json.items || [];
+      feedList.innerHTML = `<li><strong>Лента: ${feedTitle}</strong></li>`;
+
+      if (!items.length) return feedList.innerHTML += '<li>Нет записей.</li>';
+
+      items.forEach(it => {
+        let title =
+          it.title ||
+          it.summary ||
+          it.content_text ||
+          (it.content_html ? it.content_html.replace(/<[^>]+>/g, '').slice(0, 120) : '') ||
+          'Без заголовка';
+
+        if (title.length > 140) title = title.slice(0, 140) + '…';
+        const link = it.url || it.external_url || '#';
+
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${link}" target="_blank">${escapeHtml(title)}</a>`;
+        feedList.appendChild(li);
+      });
+      return;
+    }
+
+    // XML RSS / Atom
+    const xmlText = await response.text();
+    const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+    if (xml.querySelector('parsererror')) throw new Error('Ошибка XML');
+
+    const isAtom = xml.querySelector('feed');
+    const isRss = xml.querySelector('rss, channel');
+    if (!isAtom && !isRss) throw new Error('Неизвестный формат');
+
+    const items = isAtom ? xml.querySelectorAll('entry') : xml.querySelectorAll('item');
+    const feedTitle =
+      (isAtom ? xml.querySelector('feed>title') : xml.querySelector('channel>title'))?.textContent ||
+      'Без названия';
+
     feedList.innerHTML = `<li><strong>Лента: ${escapeHtml(feedTitle)}</strong></li>`;
-    if(items.length === 0){ feedList.innerHTML += '<li>Нет записей.</li>'; return; }
-    items.forEach(item=>{
-      let title = 'Без заголовка', link = '#';
-      if(isAtom){
-        const titleEl = item.querySelector('title'); title = titleEl ? titleEl.textContent : 'Без заголовка';
-        const linkEl = item.querySelector('link[rel="alternate"]'); link = linkEl ? linkEl.getAttribute('href') : '#';
-      } else {
-        const titleEl = item.querySelector('title'); title = titleEl ? titleEl.textContent : 'Без заголовка';
-        const linkEl = item.querySelector('link'); link = linkEl ? linkEl.textContent : '#';
-      }
+    if (!items.length) return feedList.innerHTML += '<li>Нет записей.</li>';
+
+    items.forEach(it => {
+      const title = it.querySelector('title')?.textContent?.trim() || 'Без заголовка';
+      const link = isAtom
+        ? it.querySelector('link[rel="alternate"]')?.getAttribute('href')
+        : it.querySelector('link')?.textContent?.trim() || '#';
       const li = document.createElement('li');
       li.innerHTML = `<a href="${escapeHtml(link)}" target="_blank">${escapeHtml(title)}</a>`;
       feedList.appendChild(li);
     });
-  }catch(err){
-    feedList.innerHTML = `<li class="error">Ошибка: ${escapeHtml(err.message || err)}</li>`;
+  } catch (err) {
+    feedList.innerHTML = `<li class="error">Ошибка: ${escapeHtml(err.message)}</li>`;
     console.error('Ошибка загрузки ленты:', err);
   }
 }
