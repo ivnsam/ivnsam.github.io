@@ -1,9 +1,11 @@
+---
+title: Feeds reader
+---
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8" />
-<title>Универсальный RSS/Atom-ридер</title>
-<!-- Внешние зависимости: qrcode.min.js и jsQR.js должны быть рядом -->
+<title>Feeds reader</title>
 <script src="qrcode.min.js"></script>
 <script src="jsQR.js"></script>
 <style>
@@ -18,7 +20,7 @@
   #rssFeed li{margin:8px 0;padding:8px;border-bottom:1px solid #eee}
   .error{color:#b00}.success{color:green}.loading{color:#666;font-style:italic}
   .controls{margin:8px 0;display:flex;flex-wrap:wrap;gap:6px}
-  /* модальные минималистично */
+  /* modal */
   .modal { position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center; }
   .box { background:#fff;padding:12px;border-radius:6px; width:90%; max-width:480px; }
   #qr { text-align:center; margin:6px 0; }
@@ -27,52 +29,52 @@
 </style>
 </head>
 <body>
-<h2>Универсальный RSS/Atom-ридер</h2>
+<h2>One page RSS/Atom/SJONFeed reader</h2>
 
-<!-- Просмотр ленты -->
+<!-- One feed loader -->
 <div>
   <input type="text" id="urlInput" placeholder="Введите URL RSS/Atom-ленты" />
-  <button onclick="loadCustomFeed()">Загрузить</button>
+  <button onclick="loadCustomFeed()">Load</button>
 </div>
 
 
-<!-- Управление подписками -->
-<div class="spoiler" onclick="toggleSpoiler('feedList')">🔧 Подписки</div>
+<!-- Feeds list -->
+<div class="spoiler" onclick="toggleSpoiler('feedList')">🔧 Feeds</div>
 <!-- <div id="spoilerContent" class="spoiler-content"> -->
 
   <div id="feedList" class="spoiler-content">
-    <h3>Мои ленты</h3>
+    <h3>My feeds</h3>
     <div>
-      <input type="text" id="newFeedUrl" placeholder="URL RSS или Atom-ленты" />
+      <input type="text" id="newFeedUrl" placeholder="Feeds URL" />
     </div>
     <div>
-      <input type="text" id="newFeedName" placeholder="Название ленты" disabled />
+      <input type="text" id="newFeedName" placeholder="Feed name" disabled />
     </div>
     <div id="status"></div>
     <div class="controls">
-      <button id="addButton" disabled onclick="addFeed()">Добавить в список</button>
-      <button onclick="exportOPML()">Экспорт OPML</button>
+      <button id="addButton" disabled onclick="addFeed()">Add to list</button>
+      <button onclick="exportOPML()">Export OPML</button>
       <input type="file" id="importFile" accept=".opml" style="display:none" />
-      <button onclick="document.getElementById('importFile').click()">Импорт OPML</button>
+      <button onclick="document.getElementById('importFile').click()">Import OPML</button>
 
-      <!-- Новые кнопки -->
-      <button onclick="exportQR()">Экспорт QR</button>
-      <button onclick="openImportModal()">Импорт QR/ссылки/файла</button>
+      <!-- Export-import with QR -->
+      <button onclick="exportQR()">Export QR</button>
+      <button onclick="openImportModal()">Import QR/URL/OPML file</button>
     </div>
     
     <div id="feedsContainer"></div>
   </div>
 </div>
 
-<!-- Настройки прокси -->
-<div class="spoiler" onclick="toggleSpoiler('spoilerContent')">🔧 Настройки прокси</div>
+<!-- Proxy config -->
+<div class="spoiler" onclick="toggleSpoiler('spoilerContent')">🔧 Proxy configurations</div>
 <div id="spoilerContent" class="spoiler-content">
   <div id="proxySettings">
-    <p><label><input type="checkbox" id="proxyEnabled" checked /> Использовать прокси</label></p>
-    <p><label>Адрес прокси:<br>
+    <p><label><input type="checkbox" id="proxyEnabled" checked /> Use proxy</label></p>
+    <p><label>Proxy URL:<br>
       <input type="text" id="proxyInput" value="https://cors-anywhere.herokuapp.com/" style="width:100%;" />
     </label></p>
-    <p><button onclick="resetProxy()">Восстановить по умолчанию</button><br><small>При использовании cors-anywhere разово разрешите доступ: <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">corsdemo</a></small></p>
+    <p><button onclick="resetProxy()">Restore defaults</button><br><small>When it's cors-anywhere request access by link: <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">corsdemo</a></small></p>
   </div>
 </div>
 
@@ -84,52 +86,51 @@
   <div class="box">
     <div id="qr"></div>
     <div id="qrNote" style="font-size:13px"></div>
-    <div style="margin-top:8px;text-align:right"><button onclick="closeQR()">Закрыть</button></div>
-    <div style="margin-top:8px;text-align:right"><button id="copyQR" onclick="copyQR()">Копировать ссылку со всеми подписками</button></div>
+    <div style="margin-top:8px;text-align:right"><button onclick="closeQR()">Close</button></div>
+    <div style="margin-top:8px;text-align:right"><button id="copyQR" onclick="copyQR()">Copy link with feeds list</button></div>
   </div>
 </div>
 
 <!-- Import Modal (camera / file / link) -->
 <div id="importModal" class="modal">
   <div class="box">
-    <div style="margin-bottom:8px;font-weight:700">Импорт подписок — камера / файл / ссылка</div>
+    <div style="margin-bottom:8px;font-weight:700">Import feeds</div>
 
-    <!-- Кнопки-переключатели -->
+    <!-- Import type switchers -->
     <div style="display:flex;gap:6px;margin-bottom:8px;">
-      <button id="tabCamera">Камера</button>
-      <button id="tabFile">Файл (картинка)</button>
-      <button id="tabLink">Вставить ссылку</button>
+      <button id="tabCamera">Camera</button>
+      <button id="tabFile">QR image file</button>
+      <button id="tabLink">Link with feed list</button>
     </div>
 
-    <!-- Камера -->
+    <!-- Camera -->
     <div id="paneCamera" style="display:none">
       <video id="video" autoplay playsinline></video>
-      <div style="margin-top:6px">Камера будет искать QR-код. Если сканирование прошло — импорт начнётся автоматически.</div>
-      <div style="margin-top:6px;text-align:right"><button onclick="stopCameraAndClose()">Закрыть</button></div>
+      <div style="margin-top:6px">Camera will search QR. When it will be found, import starts automatically.</div>
+      <div style="margin-top:6px;text-align:right"><button onclick="stopCameraAndClose()">Close</button></div>
     </div>
 
-    <!-- Загрузка изображения -->
+    <!-- Import QR image file -->
     <div id="paneFile" style="display:none">
       <input type="file" id="qrImageFile" accept="image/*" />
-      <div style="margin-top:8px;text-align:right"><button onclick="closeImportModal()">Закрыть</button></div>
+      <div style="margin-top:8px;text-align:right"><button onclick="closeImportModal()">Close</button></div>
     </div>
 
-    <!-- Ввод ссылки -->
+    <!-- Import with link with feed list -->
     <div id="paneLink" style="display:none">
       <input type="text" id="importLink" placeholder="Вставьте ссылку (или полный URL из QR)" style="width:100%" />
       <div style="margin-top:8px;text-align:right">
-        <button onclick="processImportFromLink()">Импортировать</button>
-        <button onclick="closeImportModal()">Закрыть</button>
+        <button onclick="processImportFromLink()">Import</button>
+        <button onclick="closeImportModal()">Close</button>
       </div>
     </div>
 
-    <!-- Скрытый canvas для разбора -->
+    <!-- Hidden canvas -->
     <canvas id="scanCanvas" style="display:none"></canvas>
   </div>
 </div>
 
 <script>
-/* ====== Сохранённый функционал (localStorage, render, validate, add, OPML import/export, load feed) ====== */
 
 let feeds = JSON.parse(localStorage.getItem('rssFeeds') || '[]');
 let currentValidUrl = null;
@@ -159,7 +160,7 @@ function loadFeed(index){
   loadCustomFeed();
 }
 
-/* элементы формы */
+/* form items */
 const urlInput = document.getElementById('newFeedUrl');
 const nameInput = document.getElementById('newFeedName');
 const status = document.getElementById('status');
