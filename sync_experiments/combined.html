@@ -1,0 +1,653 @@
+---
+title: Sync experiments
+---
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Сворачивающиеся вкладки</title>
+<style>
+  /* tabs styles */
+  .tabcontainer {
+  	margin: 0;
+    padding: 0;
+    display: flex;
+  }
+  .tab {
+  	width: 100%;
+    border: 4px solid #f90;
+    margin-top: 5px;
+    cursor: pointer;
+    background-color: #ffa500;
+    padding: 10px 20px;
+    color: white;
+  }
+  .tab:hover {
+    /* background-color: #eee;
+    color: black; */
+    border-color: #eee;
+  }
+  .tabexpanded {
+    background-color: #eee;
+    color: black;
+  }
+  .content {
+    border: 1px solid #f90;
+    border-top: none;
+    padding: 20px;
+    display: none;
+  }
+  .contentexpanded {
+    display: block;
+    border-color: #ffa500;
+  }
+  /* stunley styles */
+  body{font-family:Inter,Segoe UI,Arial;max-width:980px;margin:20px auto;padding:14px;color:#0b1220}
+  button{padding:8px 12px;border-radius:6px;border:1px solid #ccc;background:#fafafa;cursor:pointer}
+  h1{font-size:18px;margin-bottom:6px}
+  .muted{color:#555;font-size:13px;margin-bottom:12px}
+  .syncedinput[type="text"]{width:100%;padding:8px;font-size:16px;border:1px solid #ddd;border-radius:6px}
+  .row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .status{margin-top:10px;padding:8px;border-radius:6px;background:#eef7ff;border:1px solid #d6ecff;font-weight:600}
+  .logfield{background:#f8fafc;border:1px solid #eee;padding:8px;border-radius:6px;max-height:300px;overflow:auto}
+  .small{font-size:12px;color:#666;width:100%;height:140px;font-family:monospace;margin-top:6px;padding:8px;border-radius:6px;border:1px solid #eee}
+</style>
+</head>
+<body>
+
+<div class="tabcontainer">
+<div class="tab" onclick="toggleTab(0)">Вкладка 1</div>
+<div class="tab" onclick="toggleTab(1)">Вкладка 2</div>
+<div class="tab" onclick="toggleTab(2)">Вкладка 3 (manual WebRTC)</div>
+</div>
+<div class="content" id="content0">
+    Содержимое вкладки 1
+</div>
+<div class="content" id="content1">
+    Содержимое вкладки 2
+</div>
+<div class="content" id="content2">
+    <h1>STUN-only WebRTC — синхронизация поля ввода</h1>
+  <div class="muted">Sanitizer: убирает некорректные/невидимые символы, нормализует окончания строк и удаляет известные проблемные атрибуты SCTP.</div>
+
+  <label>Синхронизируемое поле:</label>
+  <input id="sharedInput" placeholder="Пишите текст — он будет отправлен по DataChannel" autocomplete="off"/>
+
+  <div class="row">
+    <button id="createOffer">Create Offer</button>
+    <button id="createAnswer">Create Answer (from remote offer)</button>
+    <button id="setRemote">Set Remote Description (paste remote SDP)</button>
+    <button id="reset">Reset / New session</button>
+  </div>
+
+  <div style="margin-top:12px">
+    <label>STUN servers (insert servers list like JS array - ["stun:server1:port1", "stun:server2:port2", "stun:server3:port3"]):</label>
+    <textarea id="STUNServers" class="small"></textarea>
+  </div>
+
+  <div style="margin-top:12px">
+    <label>Local SDP (скопируйте текст и передайте другому устройству):</label>
+    <textarea id="localSDP" readonly class="small"></textarea>
+    <div class="row">
+      <button id="copyLocal">Copy local SDP</button>
+      <button id="downloadLocal">Download local SDP (.sdp)</button>
+    </div>
+  </div>
+
+  <div style="margin-top:12px">
+    <label>Remote SDP (вставьте сюда SDP, полученный от другого устройства):</label>
+    <textarea id="remoteSDP" class="small"></textarea>
+  </div>
+
+  <div class="status" id="status">Status: idle</div>
+
+  <h3 style="margin-top:14px">Log</h3>
+  <pre id="log" class="small logfield"></pre>
+</div>
+
+<!-- tabs scripts -->
+<script>
+function toggleTab(index) {
+  const contents = document.querySelectorAll('.content');
+  for (let i = 0; i < contents.length; i++) {
+    if (i === index) {
+      // Переключаем текущее состояние выбранной вкладки
+      contents[i].classList.toggle('contentexpanded');
+    } else {
+      // Закрываем все остальные вкладки
+      contents[i].classList.remove('contentexpanded');
+    }
+  }
+  const tabs = document.querySelectorAll('.tab');
+  for (let i = 0; i < tabs.length; i++) {
+    if (i === index) {
+      // Переключаем текущее состояние выбранной вкладки
+      tabs[i].classList.toggle('tabexpanded');
+    } else {
+      // Закрываем все остальные вкладки
+      tabs[i].classList.remove('tabexpanded');
+    }
+  }
+}
+</script>
+
+<!-- stunley scripts -->
+<script>
+(async function(){
+  const inputEl = document.getElementById('sharedInput');
+  const localSDPEl = document.getElementById('localSDP');
+  const remoteSDPEl = document.getElementById('remoteSDP');
+  const logEl = document.getElementById('log');
+  const statusEl = document.getElementById('status');
+
+  let pc = null, dc = null, isOffering = false, lastSend = '', sendTimer = null;
+
+  function nowTs(){ return new Date().toISOString().slice(11,23); }
+  function log(...args){
+    const line = '[' + nowTs() + '] ' + args.map(a=>{
+      if(typeof a === 'string') return a;
+      try{ return JSON.stringify(a); }catch(e){ return String(a); }
+    }).join(' ');
+    logEl.textContent = line + '\n' + logEl.textContent;
+    console.debug(...args);
+  }
+  function setStatus(s){ statusEl.textContent = 'Status: ' + s; }
+
+
+  // Проверка одного STUN-сервера
+  async function checkStunServer(url) {
+    // Игнорируем конфигурацию TURN, здесь фокус на STUN
+    const tempPC = new RTCPeerConnection({ iceServers: [{ urls: url }] });
+
+    return new Promise((resolve) => {
+      let finished = false;
+      // Таймаут на случай безответности
+      const timeout = setTimeout(() => {
+        if (!finished) {
+          finished = true;
+          tempPC.close();
+          resolve({ url, ok: false, reason: 'timeout' });
+        }
+      }, 4000);
+
+      // Прослушивание ICE-кадидатов
+      tempPC.onicecandidate = (event) => {
+        if (event && event.candidate) {
+          const cand = event.candidate.candidate || '';
+          // srflx или relay укажут на валидность проверки
+          if (cand.includes('srflx') || cand.includes('relay')) {
+            if (!finished) {
+              finished = true;
+              clearTimeout(timeout);
+              tempPC.close();
+              resolve({ url, ok: true, cand });
+            }
+          }
+        }
+      };
+
+      // Запуск ICE Gathering
+      tempPC.createDataChannel('probe');
+      tempPC.createOffer().then(offer => tempPC.setLocalDescription(offer)).catch(() => {});
+    });
+  }
+
+  // Параллельная проверка всех серверов с ограничением количества параллелизмом
+  async function checkAllStunServersConcurrently(stunUrls, maxConcurrent = 8) {
+    const results = [];
+    let index = 0;
+
+    async function worker() {
+      while (index < stunUrls.length) {
+        const url = stunUrls[index++];
+        try {
+          const res = await checkStunServer(url);
+          results.push(res);
+          // Логируем прогресс
+          console.log(`Checked ${url}: ${res.ok ? 'OK' : 'NO'}`);
+        } catch (e) {
+          console.log(`Checked ${url}: error`, e);
+          results.push({ url, ok: false, reason: 'error' });
+        }
+      }
+    }
+
+    const workers = [];
+    for (let i = 0; i < maxConcurrent; i++) {
+      workers.push(worker());
+    }
+
+    await Promise.all(workers);
+    return results;
+  }
+
+  // Сохранение рабочих серверов в localStorage
+  // function saveWorkingToStorage(results) {
+  //   const workingUrls = results.filter(r => r.ok).map(r => r.url);
+  //   // Можно хранить как JSON-строку для простоты
+  //   localStorage.setItem('workingStunServers', JSON.stringify(workingUrls));
+  //   console.log('Saved working servers to localStorage:', workingUrls);
+  // }
+
+  // load STUN (limited)
+  async function loadStunList(){
+    // loads list from STUNServers input element
+    try{
+      if (localStorage.getItem('workingStunServers') == null) {
+        log("loadStunList: STUN servers will be loaded from 'STUN servers' input, checked and saved to 'workingStunServers' item in localStorage for next use in this browser.")
+        const usersStunServers = JSON.parse(document.getElementById("STUNServers").value);
+
+        // Получаем плоский список URL-адресов
+        const stunUrls = usersStunServers.flatMap(s => s.urls);
+
+        if (usersStunServers && usersStunServers != []){
+          const results = await checkAllStunServersConcurrently(usersStunServers, 10); // checks in parallel
+          console.log('Итоговые результаты:', results.filter(r => r.ok).length, 'из', results.length);
+          const workingUrls = results.filter(r => r.ok).map(r => r.url);
+          // Можно хранить как JSON-строку для простоты
+          localStorage.setItem('workingStunServers', JSON.stringify(workingUrls));
+          console.log('Saved working servers to localStorage:', workingUrls);
+        }
+      }
+
+      try{
+        const raw = localStorage.getItem('workingStunServers');
+        if(!raw) return [];
+        const arr = JSON.parse(raw);
+        if(!Array.isArray(arr)) return [];
+        log("loadStunList: STUN servers loaded from localStorage. To avoid them - delete 'workingStunServers' item in localStorage.");
+        return arr.filter(x => typeof x === 'string' && x.trim().length>0).slice(0,6);
+      }catch(e){
+        console.warn('failed to parse workingStunServers', e);
+        return [];
+      }
+
+      if(!raw) return [];
+      const arr = JSON.parse(raw);
+      if(!Array.isArray(arr)) return [];
+      return arr.filter(x => typeof x === 'string' && x.trim().length>0).slice(0,6);
+    }catch(e){
+      console.warn('failed to parse workingStunServers', e);
+      return [];
+    }
+  }
+  async function makeConfig(){
+    const list = await loadStunList();
+    if (list && list.length>0) {
+      const chosen = list;
+      const iceServers = chosen.map(u => ({urls: u}));
+      log('Using STUN servers:', iceServers);
+      return {iceServers};
+    } else {
+      log("STUN servers not found or not working. Stopped. Refresh page and try again.");
+      return;
+    }
+  }
+
+  // Robust sanitizer:
+  // - strip BOM
+  // - normalize line endings to CRLF
+  // - split, trim each line
+  // - remove non-printable chars (except TAB, space)
+  // - remove lines that don't match SDP "token=" pattern (e.g. "a=","m=")
+  // - ensure final CRLF
+  function toHexSnippet(str, max=16){
+    const buf = new TextEncoder().encode(str);
+    const n = Math.min(buf.length, max);
+    const parts = [];
+    for(let i=0;i<n;i++) parts.push(buf[i].toString(16).padStart(2,'0'));
+    return parts.join(' ') + (buf.length>max ? ' ...' : '');
+  }
+
+  function sanitizeSDP(sdp){
+    if(!sdp || typeof sdp !== 'string') return '';
+    // strip BOM
+    sdp = sdp.replace(/^\uFEFF/, '');
+    // replace CRLF/CR/LF -> CRLF
+    sdp = sdp.replace(/\r\n|\r|\n/g, '\r\n');
+    // remove any NUL bytes or other control chars except \t and space
+    sdp = sdp.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+    // split and trim lines
+    const lines = sdp.split('\r\n').map(l => l.trim());
+    return lines.join('\r\n') + '\r\n';
+  }
+
+  function looksLikeSDP(txt){ return typeof txt === 'string' && txt.includes('v=0') && txt.includes('o='); }
+
+  function waitForIceGatheringComplete(pcInstance, timeout = 7000){
+    return new Promise(resolve => {
+      if(!pcInstance) return resolve();
+      if(pcInstance.iceGatheringState === 'complete') return resolve();
+      const onState = () => {
+        if(pcInstance.iceGatheringState === 'complete'){
+          pcInstance.removeEventListener('icegatheringstatechange', onState);
+          resolve();
+        }
+      };
+      pcInstance.addEventListener('icegatheringstatechange', onState);
+      setTimeout(()=> {
+        try{ pcInstance.removeEventListener('icegatheringstatechange', onState); }catch(_){} 
+        resolve();
+      }, timeout);
+    });
+  }
+
+  async function createPeerConnection(){
+    const cfg = await makeConfig();
+    pc = new RTCPeerConnection(cfg);
+
+    pc.oniceconnectionstatechange = ()=> {
+      log('ICE state:', pc.iceConnectionState);
+      setStatus(pc.iceConnectionState);
+    };
+    pc.onconnectionstatechange = ()=> {
+      log('Connection state:', pc.connectionState);
+      setStatus(pc.connectionState);
+    };
+
+    pc.onicecandidate = (evt) => {
+      if(evt && evt.candidate) log('icecandidate event candidate [has-candidate]');
+      else log('icecandidate event null (gathering finished or none)');
+    };
+
+    pc.onicecandidateerror = (ev) => {
+      try{
+        const details = {
+          url: ev && (ev.url || ev.address || ev.host) || null,
+          port: ev && (ev.port || null),
+          errorCode: ev && (ev.errorCode || ev.code || null),
+          errorText: ev && (ev.errorText || ev.reason || null),
+          isTrusted: ev && ev.isTrusted || false
+        };
+        log('ICE candidate error (detailed):', details);
+        console.warn('Raw onicecandidateerror event:', ev);
+      }catch(e){
+        log('ICE candidate error (serialize failed):', e);
+      }
+    };
+
+    pc.ondatachannel = (ev) => {
+      log('ondatachannel', ev.channel && ev.channel.label);
+      setupDataChannel(ev.channel);
+    };
+
+    return pc;
+  }
+
+  function setupDataChannel(channel){
+    dc = channel;
+    dc.onopen = ()=> {
+      log('DataChannel open');
+      setStatus('datachannel open');
+      if(inputEl.value) {
+        try{ dc.send(JSON.stringify({type:'value', v: inputEl.value})); log('sent initial value on open'); }catch(e){ log('send on open failed', e); }
+      }
+    };
+    dc.onclose = ()=> { log('DataChannel closed'); setStatus('datachannel closed'); };
+    dc.onerror = (e)=> { log('DataChannel error:', e); console.error(e); };
+    dc.onmessage = (ev)=> {
+      try{
+        const msg = JSON.parse(ev.data);
+        if(msg.type === 'value'){
+          log('recv value', msg.v);
+          inputEl.value = msg.v;
+          localStorage.setItem('lastSharedValue', msg.v);
+        }
+      }catch(e){ log('malformed message', ev.data); }
+    };
+  }
+
+  function scheduleSendValue(){
+    if(!dc || dc.readyState !== 'open') return;
+    if(sendTimer) clearTimeout(sendTimer);
+    sendTimer = setTimeout(()=> {
+      const v = inputEl.value;
+      if(v === lastSend) return;
+      lastSend = v;
+      try{ dc.send(JSON.stringify({type:'value', v})); log('sent', v); }catch(e){ log('send failed', e); }
+    }, 120);
+  }
+
+  // Offer / Answer flows
+  async function createOffer(){
+    isOffering = true;
+    if(pc) try{ pc.close(); }catch(_){}
+    await createPeerConnection();
+
+    const channel = pc.createDataChannel('sync');
+    setupDataChannel(channel);
+
+    try{
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      log('Waiting for ICE gathering to finish (offerer)...');
+      await waitForIceGatheringComplete(pc, 8000);
+
+      // sanitize BEFORE exposing to user (ensures peers get safe copy)
+      localSDPEl.value = pc.localDescription ? sanitizeSDP(pc.localDescription.sdp) : '';
+      log('Offer created (sanitized for copy).');
+      setStatus('offer ready (copy SDP to remote)');
+    }catch(e){
+      handleException('createOffer', e);
+      setStatus('error creating offer');
+    }
+  }
+
+  async function createAnswerFromRemoteOffer(remoteSDPText){
+    try{
+      if(!looksLikeSDP(remoteSDPText)) throw new Error('Remote text не выглядит как SDP (нет v=0 / o=).');
+
+      // sanitize incoming
+      const cleaned = sanitizeSDP(remoteSDPText);
+      
+
+
+      // debug: show last bytes in hex to catch hidden chars
+      log('createAnswer: incoming SDP tail hex:', toHexSnippet(cleaned.slice(-64), 32));
+
+      if(pc) try{ pc.close(); }catch(_){}
+      await createPeerConnection();
+
+      log('Setting remote (offer) ...');
+      // important: if browser errors here, we will catch and dump debug
+      await trySetRemote({type:'offer', sdp: cleaned});
+
+      log('Creating answer...');
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+
+      log('Waiting for ICE gathering to finish (answerer)...');
+      await waitForIceGatheringComplete(pc, 8000);
+
+      localSDPEl.value = pc.localDescription ? sanitizeSDP(pc.localDescription.sdp) : '';
+      log('Answer created (sanitized). Copy local SDP back to offerer.');
+      setStatus('answer ready (copy SDP back)');
+    }catch(e){
+      handleException('createAnswer', e);
+      setStatus('error creating answer');
+    }
+  }
+
+  async function setRemoteDescriptionFromText(remoteText){
+    try{
+      if(!looksLikeSDP(remoteText)) throw new Error('Remote text не выглядит как SDP (нет v=0 / o=).');
+
+      const cleaned = sanitizeSDP(remoteText);
+      log('setRemoteDescription: incoming tail hex:', toHexSnippet(cleaned.slice(-64), 32));
+
+      if(!pc) await createPeerConnection();
+
+      // decide type
+      let typeGuess = 'answer';
+      if(!pc.localDescription || pc.signalingState !== 'have-local-offer') typeGuess = 'offer';
+
+      log('setRemoteDescription: treating remote as', typeGuess);
+      await trySetRemote({type: typeGuess, sdp: cleaned});
+
+      if(typeGuess === 'offer'){
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        await waitForIceGatheringComplete(pc, 8000);
+        localSDPEl.value = pc.localDescription ? sanitizeSDP(pc.localDescription.sdp) : '';
+        log('Auto-answer created (paste local SDP back to remote peer)');
+        setStatus('answer ready (paste to remote)');
+      } else {
+        setStatus('remote answer applied');
+      }
+    }catch(e){
+      handleException('setRemoteDescription', e);
+      setStatus('error setting remote description');
+    }
+  }
+
+  // robust setter with debug-on-error
+  async function trySetRemote(desc){
+    try{
+      await pc.setRemoteDescription(desc);
+      log('setRemoteDescription succeeded');
+      diagnoseP2P(pc).then(res=>{
+        if(res.ok) {
+          console.log("yap! everthing is P2P :)");
+        } else {
+          console.log("noooooo, it's not P2P :(");
+          console.log(res.reason)
+        }
+      });
+    }catch(e){
+      // on failure produce more debug: dump last lines and hex of each line
+      try{
+        log('setRemoteDescription FAILED:', e.name + ': ' + e.message);
+        // build line-by-line debug
+        const sdp = desc.sdp || '';
+        const lines = sdp.split('\r\n');
+        const lastN = 8;
+        const tail = lines.slice(-lastN);
+        log('--- last SDP lines (most recent first) ---');
+        tail.reverse().forEach((ln, idx) => {
+          log(`#${idx} len=${ln.length} hex=${toHexSnippet(ln, 20)} text=${ln}`);
+        });
+        log('--- end tail ---');
+      }catch(x){
+        console.error('debug dump failed', x);
+      }
+      throw e; // rethrow so caller handles
+    }
+  }
+
+  function handleException(place, e){
+    try{
+      if(e && e.name && e.message){
+        log(`${place} error: ${e.name}: ${e.message}`);
+      } else {
+        log(`${place} error:`, e);
+      }
+      if(e && e.stack) console.error(e.stack);
+    }catch(x){
+      console.error('error while logging exception', x);
+    }
+  }
+
+  // UI wiring
+  document.getElementById('createOffer').onclick = async ()=> {
+    setStatus('creating offer...');
+    await createOffer();
+  };
+  document.getElementById('createAnswer').onclick = async ()=> {
+    const txt = remoteSDPEl.value.trim();
+    if(!txt){ alert('Вставьте SDP offer в поле Remote SDP, затем нажмите Create Answer'); return; }
+    setStatus('creating answer...');
+    await createAnswerFromRemoteOffer(txt);
+  };
+  document.getElementById('setRemote').onclick = async ()=> {
+    const txt = remoteSDPEl.value.trim();
+    if(!txt){ alert('Вставьте remote SDP в поле Remote SDP'); return; }
+    setStatus('setting remote description...');
+    await setRemoteDescriptionFromText(txt);
+  };
+  document.getElementById('reset').onclick = ()=> {
+    try{ if(pc) pc.close(); }catch(e){}
+    pc = null; dc = null; localSDPEl.value = ''; remoteSDPEl.value = ''; log('reset done'); setStatus('idle');
+  };
+  document.getElementById('copyLocal').onclick = async ()=> {
+    try{ await navigator.clipboard.writeText(localSDPEl.value); log('local SDP copied to clipboard'); }catch(e){ log('copy failed', e); alert('Не удалось скопировать — выделите вручную.'); }
+  };
+  document.getElementById('downloadLocal').onclick = ()=> {
+    const blob = new Blob([localSDPEl.value], {type:'application/sdp'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'local.sdp'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  };
+
+  inputEl.addEventListener('input', ()=> { scheduleSendValue(); localStorage.setItem('lastSharedValue', inputEl.value); });
+  inputEl.value = localStorage.getItem('lastSharedValue') || '';
+  log('Note: STUN-only. If peers cannot reach each other due to NAT, use TURN (relay).');
+
+})();
+
+
+// Вставить в страницу, где доступен RTCPeerConnection pc
+async function diagnoseP2P(pc, {closeIfRelay = false} = {}) {
+  if(!pc) throw new Error('pc is null');
+  // дождёмся состояния connected/succeeded если нужно, но можно и сразу запросить stats
+  try {
+    const stats = await pc.getStats();
+    // собрать все записи в map для удобства
+    const byId = new Map();
+    stats.forEach(r => byId.set(r.id, r));
+
+    // найти выбранную candidate-pair
+    let selectedPair = null;
+    stats.forEach(r=>{
+      // older browsers: r.type === 'candidate-pair'
+      // newer: r.type may be 'candidate-pair' or 'transport' + 'candidate-pair' entries
+      if(r.type === 'candidate-pair' && (r.selected || r.nominated || r.state === 'succeeded')) {
+        selectedPair = r;
+      }
+    });
+    // fallback: choose the one with state === 'succeeded' and nominated true
+    if(!selectedPair) {
+      stats.forEach(r => {
+        if(r.type === 'candidate-pair' && r.state === 'succeeded' && r.nominated) selectedPair = r;
+      });
+    }
+    if(!selectedPair) {
+      console.log('No selected candidate-pair found yet; ICE might still be gathering or connection not established.');
+      return {ok: false, reason: 'no-pair', selectedPair: null};
+    }
+
+    // get local/remote candidate objects
+    const localCand = byId.get(selectedPair.localCandidateId) || byId.get(selectedPair.localCandidate) || null;
+    const remoteCand = byId.get(selectedPair.remoteCandidateId) || byId.get(selectedPair.remoteCandidate) || null;
+
+    const localType = localCand ? (localCand.type || localCand.candidateType || localCand.datatype) : 'unknown';
+    const remoteType = remoteCand ? (remoteCand.type || remoteCand.candidateType || remoteCand.datatype) : 'unknown';
+
+    console.log('Selected pair:', {
+      pair: selectedPair,
+      localCandidate: localCand,
+      remoteCandidate: remoteCand,
+      localType, remoteType
+    });
+
+    const usedRelay = [localType, remoteType].some(t => String(t).toLowerCase().includes('relay'));
+
+    if(usedRelay) {
+      console.warn('Connection uses a relay (TURN). Types:', localType, remoteType);
+      if(closeIfRelay) {
+        try { pc.close(); } catch(e){/* ignore */ }
+        console.warn('Closed peer connection because relay was detected and closeIfRelay=true.');
+      }
+      return {ok:false, reason:'relay', localType, remoteType, selectedPair, localCandidate: localCand, remoteCandidate: remoteCand};
+    } else {
+      console.log('Connection appears P2P. Candidate types:', localType, remoteType);
+      return {ok:true, reason:'p2p', localType, remoteType, selectedPair, localCandidate: localCand, remoteCandidate: remoteCand};
+    }
+  } catch(e){
+    console.error('diagnoseP2P error', e);
+    return {ok:false, reason:'error', error:e};
+  }
+}
+</script>
+
+</body>
+</html>
