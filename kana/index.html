@@ -3,108 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kana Master Ultimate</title>
+    <title>Kana Master Gold Edition</title>
     <style>
-        :root {
-            --primary: #6366f1;
-            --success: #22c55e;
-            --error: #ef4444;
-            --bg: #f1f5f9;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            transition: background 0.4s ease;
-        }
-
-        .container {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 2rem;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 90%;
-            max-width: 450px;
-        }
-
+        :root { --primary: #6366f1; --success: #22c55e; --error: #ef4444; --bg: #f1f5f9; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; transition: background 0.4s ease; }
+        .container { background: white; padding: 2.5rem; border-radius: 2rem; box-shadow: 0 20px 50px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 450px; }
         .tabs { display: flex; gap: 10px; margin-bottom: 1.5rem; justify-content: center; }
-        
-        .tab-btn {
-            padding: 10px 25px; border: 2px solid #e2e8f0; background: none;
-            border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s;
-        }
-
+        .tab-btn { padding: 10px 25px; border: 2px solid #e2e8f0; background: none; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        .char-display {
-            font-size: 8rem; margin: 0.5rem 0; font-weight: bold;
-            color: #1e293b; cursor: pointer; line-height: 1.1;
-        }
-
+        .char-display { font-size: 7rem; margin: 0.5rem 0; font-weight: bold; color: #1e293b; cursor: pointer; line-height: 1.2; min-height: 1.2em; }
         .feedback-text { height: 2.5rem; font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; }
-
-        .mode-switch {
-            display: flex; align-items: center; justify-content: center;
-            gap: 10px; margin-bottom: 1.5rem; font-weight: 600; color: #64748b;
-        }
-
+        .mode-switch { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1.5rem; font-weight: 600; color: #64748b; }
         .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc; transition: .4s; border-radius: 24px;
-        }
-        .slider:before {
-            position: absolute; content: ""; height: 18px; width: 18px;
-            left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;
-        }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(22px); }
-
         .input-group { display: flex; gap: 10px; align-items: center; justify-content: center; }
-        
-        .mic-btn {
-            position: relative; width: 60px; height: 60px; border-radius: 15px;
-            background: #f1f5f9; border: none; cursor: pointer; overflow: hidden;
-            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
-        }
-
-        .mic-progress {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 0;
-            background: rgba(239, 68, 68, 0.2);
-            border-top: 2px solid var(--error);
-            pointer-events: none;
-        }
-
-        .mic-btn.active .mic-progress {
-            height: 100%;
-            transition: height 3s linear;
-        }
-
-        input[type="text"] {
-            flex: 1; padding: 16px; font-size: 1.5rem; border: 3px solid #e2e8f0;
-            border-radius: 15px; text-align: center; outline: none;
-        }
-
+        .mic-btn { position: relative; width: 60px; height: 60px; border-radius: 15px; background: #f1f5f9; border: none; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .mic-progress { position: absolute; bottom: 0; left: 0; width: 100%; height: 0; background: rgba(239, 68, 68, 0.2); border-top: 2px solid var(--error); pointer-events: none; }
+        .mic-btn.active .mic-progress { height: 100%; transition: height 3s linear; }
+        input[type="text"] { flex: 1; padding: 16px; font-size: 1.5rem; border: 3px solid #e2e8f0; border-radius: 15px; text-align: center; outline: none; }
         input.correct { border-color: var(--success); background: #f0fdf4; }
         input.wrong { border-color: var(--error); background: #fef2f2; }
-
-        .settings-link { margin-top: 1.5rem; color: var(--primary); cursor: pointer; font-size: 0.85rem; opacity: 0.7; }
-        
+        .settings-link { margin-top: 1.5rem; color: var(--primary); cursor: pointer; font-size: 0.85rem; opacity: 0.7; text-decoration: underline; }
         body.flash-success { background-color: #dcfce7; }
         body.flash-error { background-color: #fee2e2; }
-
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100;
-        }
-        .modal-content { background: white; padding: 2rem; border-radius: 1.5rem; width: 85%; max-width: 320px; max-height: 80vh; overflow-y: auto; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: white; padding: 2rem; border-radius: 1.5rem; width: 85%; max-width: 350px; max-height: 80vh; overflow-y: auto; text-align: left; }
+        .row-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+        .modal-footer { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 8px; }
+        .small-btn { padding: 6px; font-size: 0.8rem; cursor: pointer; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -114,205 +44,95 @@
         <button class="tab-btn active" id="btn-h" onclick="setMode('hiragana')">Hiragana</button>
         <button class="tab-btn" id="btn-k" onclick="setMode('katakana')">Katakana</button>
     </div>
-
     <div class="mode-switch">
         <span>Клавиши</span>
-        <label class="switch">
-            <input type="checkbox" id="voice-toggle" onchange="toggleVoiceMode()">
-            <span class="slider"></span>
-        </label>
+        <label class="switch"><input type="checkbox" id="voice-toggle" onchange="toggleVoiceMode()"><span class="slider"></span></label>
         <span>Голос</span>
     </div>
-
-    <div class="char-display" id="char" onclick="speakCurrent()">あ</div>
+    <div class="char-display" id="char" onclick="speakCurrent()">...</div>
     <div id="feedback" class="feedback-text"></div>
-    
     <div class="input-group" id="input-ui">
-        <input type="text" id="answer" placeholder="ответ..." autocomplete="off" autofocus>
-        <button class="mic-btn" id="mic-trigger" onclick="startSingleListening()">
-            <div class="mic-progress" id="progress-bar"></div>
-            <span style="position: relative; z-index: 2;">🎤</span>
-        </button>
+        <input type="text" id="answer" placeholder="ответ..." autocomplete="off">
+        <button class="mic-btn" id="mic-trigger" onclick="startSingleListening()"><div class="mic-progress"></div><span style="position:relative;z-index:2;">🎤</span></button>
     </div>
-
     <div class="settings-link" onclick="document.getElementById('modal').style.display='flex'">Настроить символы</div>
 </div>
 
 <div class="modal" id="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content">
         <h3 style="margin-top:0">Выбор групп</h3>
+        <div style="display:flex; gap:5px; margin-bottom:15px;">
+            <button class="small-btn" onclick="selectAll(true)">Выбрать все</button>
+            <button class="small-btn" onclick="selectAll(false)">Очистить</button>
+        </div>
         <div id="filters"></div>
-        <button class="tab-btn active" style="width:100%; margin-top:1.5rem;" onclick="document.getElementById('modal').style.display='none'">Готово</button>
+        <div class="modal-footer"><button class="tab-btn active" onclick="document.getElementById('modal').style.display='none'">Готово</button></div>
     </div>
 </div>
 
 <script>
     const KANA = {
-        'A': { h: {'あ':'a','い':'i','う':'u','え':'e','お':'o'}, k: {'ア':'a','イ':'i','ウ':'u','エ':'e','オ':'o'} },
-        'KA': { h: {'か':'ka','き':'ki','く':'ku','け':'ke','こ':'ko'}, k: {'カ':'ka','キ':'ki','ク':'ku','ケ':'ke','コ':'ko'} },
-        'SA': { h: {'さ':'sa','し':'shi','す':'su','せ':'se','そ':'so'}, k: {'サ':'sa','シ':'shi','ス':'su','セ':'se','ソ':'so'} },
-        'TA': { h: {'た':'ta','ち':'chi','つ':'tsu','て':'te','と':'to'}, k: {'タ':'ta','チ':'chi','ツ':'tsu','テ':'te','ト':'to'} },
-        'NA': { h: {'な':'na','に':'ni','ぬ':'nu','ね':'ne','の':'no'}, k: {'ナ':'na','ニ':'ni','ヌ':'nu','ネ':'ne','ノ':'no'} },
-        'HA': { h: {'は':'ha','ひ':'hi','ふ':'fu','へ':'he','ほ':'ho'}, k: {'ハ':'ha','ヒ':'hi','フ':'fu','ヘ':'he','ホ':'ho'} },
-        'MA': { h: {'ま':'ma','み':'mi','む':'mu','め':'me','も':'mo'}, k: {'マ':'ma','ミ':'mi','ム':'mu','メ':'me','モ':'mo'} },
-        'YA': { h: {'や':'ya','ゆ':'yu','よ':'yo'}, k: {'ヤ':'ya','ユ':'yu','ヨ':'yo'} },
-        'RA': { h: {'ら':'ra','り':'ri','る':'ru','れ':'re','ろ':'ro'}, k: {'ラ':'ra','リ':'ri','ル':'ru','レ':'re','ロ':'ro'} },
-        'WA': { h: {'わ':'wa','を':'wo','ん':'n'}, k: {'ワ':'wa','ヲ':'wo','ン':'n'} },
-        // ДАКУТЭН
-        'GA': { h: {'が':'ga','ぎ':'gi','ぐ':'gu','げ':'ge','ご':'go'}, k: {'ガ':'ga','ギ':'gi','グ':'gu','ゲ':'ge','ゴ':'go'} },
-        'ZA': { h: {'ざ':'za','じ':'ji','ず':'zu','ぜ':'ze','ぞ':'so'}, k: {'ザ':'za','ジ':'ji','ズ':'zu','ゼ':'ze','ゾ':'so'} },
-        'DA': { h: {'だ':'da','ぢ':'ji','づ':'zu','で':'de','ど':'do'}, k: {'ダ':'da','ヂ':'ji','ヅ':'zu','デ':'de','ド':'do'} },
-        'BA': { h: {'ば':'ba','び':'bi','ぶ':'bu','べ':'be','ぼ':'bo'}, k: {'バ':'ba','ビ':'bi','ブ':'bu','ベ':'be','ボ':'bo'} },
-        // ХАНДАКУТЭН
-        'PA': { h: {'ぱ':'pa','ぴ':'pi','ぷ':'pu','ぺ':'pe','ぽ':'po'}, k: {'パ':'pa','ピ':'pi','プ':'pu','ペ':'pe','ポ':'po'} }
+        'A':{h:{'あ':'a','い':'i','う':'u','え':'e','お':'o'},k:{'ア':'a','イ':'i','ウ':'u','エ':'e','オ':'o'}},
+        'KA':{h:{'か':'ka','き':'ki','く':'ku','け':'ke','こ':'ko'},k:{'カ':'ka','キ':'ki','ク':'ku','ケ':'ke','コ':'ko'}},
+        'SA':{h:{'さ':'sa','し':'shi','す':'su','せ':'se','そ':'so'},k:{'サ':'sa','シ':'shi','ス':'su','セ':'se','ソ':'so'}},
+        'TA':{h:{'た':'ta','ち':'chi','つ':'tsu','て':'te','と':'to'},k:{'タ':'ta','チ':'chi','ツ':'tsu','テ':'te','ト':'to'}},
+        'NA':{h:{'な':'na','に':'ni','ぬ':'nu','ね':'ne','の':'no'},k:{'ナ':'na','ニ':'ni','ヌ':'nu','ネ':'ne','ノ':'no'}},
+        'HA':{h:{'は':'ha','ひ':'hi','ふ':'fu','へ':'he','ほ':'ho'},k:{'ハ':'ha','ヒ':'hi','フ':'fu','ヘ':'he','ホ':'ho'}},
+        'MA':{h:{'ま':'ma','み':'mi','む':'mu','め':'me','も':'mo'},k:{'マ':'ma','ミ':'mi','ム':'mu','メ':'me','も':'mo'}},
+        'YA':{h:{'や':'ya','ゆ':'yu','よ':'yo'},k:{'ヤ':'ya','ユ':'yu','ヨ':'yo'}},
+        'RA':{h:{'ら':'ra','り':'ri','る':'ru','れ':'re','ろ':'ro'},k:{'ラ':'ra','リ':'ri','ル':'ru','レ':'re','ロ':'ro'}},
+        'WA':{h:{'わ':'wa','を':'wo','ん':'n'},k:{'ワ':'wa','ヲ':'wo','ン':'n'}},
+        'GA':{h:{'が':'ga','ぎ':'gi','ぐ':'gu','げ':'ge','ご':'go'},k:{'ガ':'ga','ギ':'gi','グ':'gu','ゲ':'ge','ゴ':'go'}},
+        'ZA':{h:{'ざ':'za','じ':'ji','ず':'zu','ぜ':'ze','ぞ':'zo'},k:{'ザ':'za','ジ':'ji','ズ':'zu','ゼ':'ze','ゾ':'zo'}},
+        'DA':{h:{'だ':'da','ぢ':'ji','づ':'zu','で':'de','ど':'do'},k:{'ダ':'da','ヂ':'ji','ヅ':'zu','デ':'de','ド':'do'}},
+        'BA':{h:{'ば':'ba','び':'bi','ぶ':'bu','べ':'be','ぼ':'bo'},k:{'バ':'ba','ビ':'bi','ブ':'bu','ベ':'be','ボ':'bo'}},
+        'PA':{h:{'ぱ':'pa','ぴ':'pi','ぷ':'pu','ぺ':'pe','ぽ':'po'},k:{'パ':'pa','ピ':'pi','プ':'pu','ペ':'pe','ポ':'po'}},
+        'Y-KYA':{h:{'きゃ':'kya','きゅ':'kyu','きょ':'kyo'},k:{'キャ':'kya','キュ':'kyu','キョ':'kyo'}},
+        'Y-SHA':{h:{'しゃ':'sha','しゅ':'shu','しょ':'sho'},k:{'シャ':'sha','シュ':'shu','ショ':'sho'}},
+        'Y-CHA':{h:{'ちゃ':'cha','ちゅ':'chu','ちょ':'cho'},k:{'チャ':'cha','チュ':'chu','チョ':'cho'}},
+        'Y-NYA':{h:{'にゃ':'nya','にゅ':'nyu','にょ':'nyo'},k:{'ニャ':'nya','ニュ':'nyu','ニョ':'nyo'}},
+        'Y-HYA':{h:{'ひゃ':'hya','ひゅ':'hyu','ひょ':'hyo'},k:{'ヒャ':'hya','ヒュ':'hyu','ヒョ':'hyo'}},
+        'Y-MYA':{h:{'みゃ':'mya','みゅ':'myu','みょ':'myo'},k:{'ミャ':'mya','ミュ':'myu','ミョ':'myo'}},
+        'Y-RYA':{h:{'りゃ':'rya','りゅ':'ryu','りょ':'ryo'},k:{'リャ':'rya','リュ':'ryu','リョ':'ryo'}},
+        'Y-GYA':{h:{'ぎゃ':'gya','ぎゅ':'gyu','ぎょ':'gyo'},k:{'ギャ':'gya','ギュ':'gyu','ギョ':'gyo'}},
+        'Y-BYA':{h:{'びゃ':'bya','びゅ':'byu','びょ':'byo'},k:{'ビャ':'bya','ビュ':'byu','ビョ':'byo'}},
+        'Y-PYA':{h:{'ぴゃ':'pya','ぴゅ':'pyu','ぴょ':'pyo'},k:{'ピャ':'pya','ピュ':'pyu','ピョ':'pyo'}}
     };
 
-    let mode = 'hiragana';
-    let activeRows = ['A', 'KA', 'SA'];
-    let pool = [];
-    let current = null;
-    let isWaiting = false;
-    let voiceMode = false;
-    let micTimer = null;
-    let isListening = false;
+    let mode = localStorage.getItem('kana_mode') || 'hiragana';
+    let activeRows = JSON.parse(localStorage.getItem('kana_active')) || ['A', 'KA', 'SA'];
+    let pool = [], current = null, isWaiting = false, voiceMode = (localStorage.getItem('kana_voice') === 'true'), micTimer = null, isListening = false;
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+    if(recognition) { recognition.lang = 'en-US'; recognition.onstart = () => isListening = true; recognition.onend = () => { isListening = false; document.getElementById('mic-trigger').classList.remove('active'); }; recognition.onresult = (e) => { const val = e.results[e.results.length-1][0].transcript.toLowerCase().trim(); if(val && !isWaiting) { document.getElementById('answer').value = val; processAnswer(val); stopListening(); } }; }
 
-    if(recognition) {
-        recognition.lang = 'en-US';
-        recognition.onstart = () => { isListening = true; };
-        recognition.onend = () => { 
-            isListening = false;
-            document.getElementById('mic-trigger').classList.remove('active');
-        };
-        recognition.onresult = (e) => {
-            const val = e.results[0][0].transcript.toLowerCase().trim();
-            if (val && !isWaiting) {
-                document.getElementById('answer').value = val;
-                processAnswer(val);
-                stopListening();
-            }
-        };
-    }
+    function toggleVoiceMode() { voiceMode = document.getElementById('voice-toggle').checked; localStorage.setItem('kana_voice', voiceMode); document.getElementById('answer').style.display = voiceMode ? 'none' : 'block'; stopListening(); if(voiceMode) setTimeout(startListening, 500); }
+    function startSingleListening() { if(!isListening && !isWaiting) startListening(); }
+    function startListening() { if(!recognition || isWaiting || isListening) return; try { recognition.start(); document.getElementById('mic-trigger').classList.add('active'); clearTimeout(micTimer); micTimer = setTimeout(() => { if(!isWaiting) { stopListening(); if(voiceMode) processAnswer("???"); } }, 3000); } catch(e){} }
+    function stopListening() { if(recognition) try { recognition.stop(); } catch(e){} document.getElementById('mic-trigger').classList.remove('active'); clearTimeout(micTimer); isListening = false; }
+    function buildPool() { pool = []; const k = mode === 'hiragana' ? 'h' : 'k'; activeRows.forEach(r => { if(KANA[r]) Object.entries(KANA[r][k]).forEach(([char, rom]) => pool.push({char, rom})); }); next(); }
+    function next() { if(pool.length === 0) buildPool(); const idx = Math.floor(Math.random()*pool.length); current = pool.splice(idx, 1)[0]; document.getElementById('char').innerText = current.char; document.getElementById('feedback').innerText = ""; document.getElementById('answer').value = ''; document.getElementById('answer').className = ''; document.body.className = ''; isWaiting = false; if(voiceMode) setTimeout(startListening, 800); else document.getElementById('answer').focus(); }
+    function processAnswer(val) { if(isWaiting) return; isWaiting = true; stopListening(); const input = document.getElementById('answer'); const feedback = document.getElementById('feedback'); if(val === current.rom) { input.classList.add('correct'); feedback.innerText = "Верно!"; feedback.style.color = "var(--success)"; document.body.classList.add('flash-success'); setTimeout(next, 800); } else { input.value = current.rom.toUpperCase(); input.classList.add('wrong'); feedback.innerText = `Ответ: ${current.rom.toUpperCase()}`; feedback.style.color = "var(--error)"; document.body.classList.add('flash-error'); pool.unshift(current); setTimeout(next, 2000); } }
+    function setMode(m) { mode = m; localStorage.setItem('kana_mode', m); document.getElementById('btn-h').classList.toggle('active', m === 'hiragana'); document.getElementById('btn-k').classList.toggle('active', m === 'katakana'); stopListening(); buildPool(); }
+    function selectAll(val) { activeRows = val ? Object.keys(KANA) : ['A']; localStorage.setItem('kana_active', JSON.stringify(activeRows)); document.querySelectorAll('#filters input').forEach(i => i.checked = val || i.parentElement.innerText.includes('A ')); buildPool(); }
+    function toggleRow(r) { activeRows.includes(r) ? activeRows=activeRows.filter(x=>x!==r) : activeRows.push(r); if(activeRows.length===0) activeRows=['A']; localStorage.setItem('kana_active', JSON.stringify(activeRows)); buildPool(); }
+    function speakCurrent() { const ut = new SpeechSynthesisUtterance(current.char); ut.lang = 'ja-JP'; window.speechSynthesis.speak(ut); }
 
-    function toggleVoiceMode() {
-        voiceMode = document.getElementById('voice-toggle').checked;
-        document.getElementById('answer').style.display = voiceMode ? 'none' : 'block';
-        stopListening();
-        if(voiceMode) setTimeout(startListening, 500);
-    }
-
-    function startSingleListening() {
-        if(!isListening && !isWaiting) startListening();
-    }
-
-    function startListening() { 
-        if(!recognition || isWaiting || isListening) return;
-        try {
-            recognition.start();
-            document.getElementById('mic-trigger').classList.add('active');
-            clearTimeout(micTimer);
-            micTimer = setTimeout(() => {
-                if(!isWaiting) {
-                    stopListening();
-                    if(voiceMode) processAnswer("???");
-                }
-            }, 3000);
-        } catch(e) {}
-    }
-
-    function stopListening() { 
-        if(recognition) try { recognition.stop(); } catch(e) {}
-        document.getElementById('mic-trigger').classList.remove('active');
-        clearTimeout(micTimer);
-        isListening = false;
-    }
-
-    function buildPool() {
-        pool = [];
-        const k = mode === 'hiragana' ? 'h' : 'k';
-        activeRows.forEach(r => {
-            if(KANA[r]) Object.entries(KANA[r][k]).forEach(([char, rom]) => pool.push({char, rom}));
-        });
-        next();
-    }
-
-    function next() {
-        if(pool.length === 0) buildPool();
-        const idx = Math.floor(Math.random()*pool.length);
-        current = pool.splice(idx, 1)[0];
-        
-        document.getElementById('char').innerText = current.char;
-        document.getElementById('feedback').innerText = "";
-        document.getElementById('answer').value = '';
-        document.getElementById('answer').className = '';
-        document.body.className = '';
-        
-        isWaiting = false;
-        if(voiceMode) setTimeout(startListening, 800);
-        else document.getElementById('answer').focus();
-    }
-
-    function processAnswer(val) {
-        if(isWaiting) return;
-        isWaiting = true;
-        stopListening();
-
-        const input = document.getElementById('answer');
-        const feedback = document.getElementById('feedback');
-
-        if(val === current.rom) {
-            input.classList.add('correct');
-            feedback.innerText = "Верно!";
-            feedback.style.color = "var(--success)";
-            document.body.classList.add('flash-success');
-            setTimeout(next, 800);
-        } else {
-            input.value = current.rom.toUpperCase();
-            input.classList.add('wrong');
-            feedback.innerText = `Ответ: ${current.rom.toUpperCase()}`;
-            feedback.style.color = "var(--error)";
-            document.body.classList.add('flash-error');
-            pool.unshift(current);
-            setTimeout(next, 2000);
-        }
-    }
-
-    function setMode(m) {
-        mode = m;
-        document.getElementById('btn-h').classList.toggle('active', m === 'hiragana');
-        document.getElementById('btn-k').classList.toggle('active', m === 'katakana');
-        stopListening();
-        buildPool();
-    }
-
-    document.getElementById('answer').addEventListener('input', (e) => {
-        const val = e.target.value.toLowerCase().trim();
-        if(val.length >= current.rom.length) processAnswer(val);
-    });
-
-    function speakCurrent() {
-        const ut = new SpeechSynthesisUtterance(current.char);
-        ut.lang = 'ja-JP';
-        window.speechSynthesis.speak(ut);
-    }
-
-    // Инит фильтров
+    // Init UI
+    document.getElementById('voice-toggle').checked = voiceMode;
+    document.getElementById('btn-h').classList.toggle('active', mode === 'hiragana');
+    document.getElementById('btn-k').classList.toggle('active', mode === 'katakana');
+    document.getElementById('answer').style.display = voiceMode ? 'none' : 'block';
+    
     const f = document.getElementById('filters');
     Object.keys(KANA).forEach(r => {
-        const d = document.createElement('div');
-        d.style.display = 'flex'; d.style.justifyContent = 'space-between'; d.style.padding = '10px 0';
-        d.style.borderBottom = '1px solid #eee';
-        d.innerHTML = `<span>Строка ${r}</span> <input type="checkbox" ${activeRows.includes(r)?'checked':''} onchange="toggleRow('${r}')">`;
+        const d = document.createElement('div'); d.className = 'row-item';
+        d.innerHTML = `<span>${r}</span> <input type="checkbox" ${activeRows.includes(r)?'checked':''} onchange="toggleRow('${r}')">`;
         f.appendChild(d);
     });
 
-    function toggleRow(r) {
-        activeRows.includes(r) ? activeRows=activeRows.filter(x=>x!==r) : activeRows.push(r);
-        buildPool();
-    }
-
+    document.getElementById('answer').addEventListener('input', (e) => { if(e.target.value.toLowerCase().trim().length >= current.rom.length) processAnswer(e.target.value.toLowerCase().trim()); });
     buildPool();
 </script>
 </body>
