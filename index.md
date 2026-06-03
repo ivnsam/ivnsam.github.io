@@ -5,7 +5,7 @@ title: Home
 My name is Ivan and I'm IT engineer 🧑‍💻
 
 <script>
-    console.log("hello from \"home\"")
+    console.log("hello from tiny internet \"home\", stranger.")
 </script>
 
 <ul>
