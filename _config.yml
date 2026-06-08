@@ -1,6 +1,4 @@
-remote_theme: ivnsam/minima
-minima:
-  skin: dark
+remote_theme: ivnsam/minima@my_theme
 title: ivnsam's pages
 author:
   name: ivnsam
