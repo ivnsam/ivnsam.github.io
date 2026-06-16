@@ -1,7 +1,7 @@
-remote_theme: ivnsam/minima@my_theme
+# remote_theme: ivnsam/minima@my_theme
 title: ivnsam's workbench
 author:
   name: ivnsam
-  email: iwansam1996@gmail.com
+  # email: iwansam1996@gmail.com
 github_username: ivnsam
 favicon_path: favicon.ico
