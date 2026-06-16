@@ -1,5 +1,6 @@
 ---
 title: Home
+layout: home
 ---
 
 My name is Ivan and I'm IT engineer 🧑‍💻
