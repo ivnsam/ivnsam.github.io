@@ -3,6 +3,10 @@
     margin: 0;
   }
 
+  .header-img {
+    height: 5em;
+  }
+
   body {
     background-color: #111b13;
     color: #276e4c;

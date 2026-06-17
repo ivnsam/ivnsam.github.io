@@ -1,0 +1,91 @@
+---
+title: Silly tabs
+description: Small tabs.
+---
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Сворачивающиеся вкладки</title>
+<style>
+  /* tabs styles */
+  .tabcontainer {
+  	margin: 0;
+    padding: 0;
+    display: flex;
+  }
+  .tab {
+  	width: 100%;
+    border: 4px solid #f90;
+    margin-top: 5px;
+    cursor: pointer;
+    background-color: #ffa500;
+    padding: 10px 20px;
+    color: white;
+  }
+  .tab:hover {
+    /* background-color: #eee;
+    color: black; */
+    border-color: #eee;
+  }
+  .tabexpanded {
+    background-color: #eee;
+    color: black;
+  }
+  .content {
+    border: 1px solid #f90;
+    border-top: none;
+    padding: 20px;
+    display: none;
+  }
+  .contentexpanded {
+    display: block;
+    border-color: #ffa500;
+  }
+</style>
+</head>
+<body>
+
+<div class="tabcontainer">
+<div class="tab" onclick="toggleTab(0)">Вкладка 1</div>
+<div class="tab" onclick="toggleTab(1)">Вкладка 2</div>
+<div class="tab" onclick="toggleTab(2)">Вкладка 3 (manual WebRTC)</div>
+</div>
+<div class="content" id="content0">
+  Содержимое вкладки 1
+</div>
+<div class="content" id="content1">
+  Содержимое вкладки 2
+</div>
+<div class="content" id="content2">
+  Содержимое вкладки 3
+</div>
+
+<!-- tabs scripts -->
+<script>
+function toggleTab(index) {
+  const contents = document.querySelectorAll('.content');
+  for (let i = 0; i < contents.length; i++) {
+    if (i === index) {
+      // Переключаем текущее состояние выбранной вкладки
+      contents[i].classList.toggle('contentexpanded');
+    } else {
+      // Закрываем все остальные вкладки
+      contents[i].classList.remove('contentexpanded');
+    }
+  }
+  const tabs = document.querySelectorAll('.tab');
+  for (let i = 0; i < tabs.length; i++) {
+    if (i === index) {
+      // Переключаем текущее состояние выбранной вкладки
+      tabs[i].classList.toggle('tabexpanded');
+    } else {
+      // Закрываем все остальные вкладки
+      tabs[i].classList.remove('tabexpanded');
+    }
+  }
+}
+</script>
+
+</body>
+</html>
