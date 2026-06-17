@@ -2,9 +2,6 @@
 title: Sync experiments
 description: Small manual syncronization experiment.
 ---
-<!DOCTYPE html>
-<html lang="ru">
-
 <head>
     <meta charset="UTF-8" />
     <title>Sync experiments</title>
@@ -576,5 +573,3 @@ description: Small manual syncronization experiment.
     </script>
 
 </body>
-
-</html>
