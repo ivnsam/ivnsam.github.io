@@ -21,8 +21,8 @@ description: Small manual syncronization experiment.
         button {
             padding: 8px 12px;
             border-radius: 6px;
-            border: 1px solid #ccc;
-            background: #fafafa;
+            border: 1px solid #939a56;
+            background: #276e4c;
             cursor: pointer
         }
 
@@ -41,7 +41,8 @@ description: Small manual syncronization experiment.
             width: 100%;
             padding: 8px;
             font-size: 16px;
-            border: 1px solid #ddd;
+            border: 1px solid #939a56;
+            background-color: #111b13;
             border-radius: 6px
         }
 
@@ -56,14 +57,14 @@ description: Small manual syncronization experiment.
             margin-top: 10px;
             padding: 8px;
             border-radius: 6px;
-            background: #eef7ff;
-            border: 1px solid #d6ecff;
+            background: #111b13;
+            border: 1px solid #1d3321;
             font-weight: 600
         }
 
         .logfield {
             background: #f8fafc;
-            border: 1px solid #eee;
+            border: 1px solid #939a56;
             padding: 8px;
             border-radius: 6px;
             max-height: 300px;
@@ -73,13 +74,14 @@ description: Small manual syncronization experiment.
         .small {
             font-size: 12px;
             color: #666;
+            background-color: #111b13;
             width: 100%;
             height: 140px;
             font-family: monospace;
             margin-top: 6px;
             padding: 8px;
             border-radius: 6px;
-            border: 1px solid #eee
+            border: 1px solid #939a56
         }
     </style>
     <style>
@@ -94,7 +96,7 @@ description: Small manual syncronization experiment.
         известные проблемные атрибуты SCTP.</div>
 
     <label>Синхронизируемое поле:</label>
-    <input id="sharedInput" placeholder="Пишите текст — он будет отправлен по DataChannel" autocomplete="off" />
+    <input id="sharedInput" placeholder="Пишите текст — он будет отправлен по DataChannel" autocomplete="off" class="syncedinput" type="text" />
 
     <div class="row">
         <button id="createOffer">Create Offer</button>
