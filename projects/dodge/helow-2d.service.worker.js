@@ -4,7 +4,7 @@
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 /** @type {string} */
-const CACHE_VERSION = '1790457266|444863809';
+const CACHE_VERSION = '1790458398|1577138774';
 /** @type {string} */
 const CACHE_PREFIX = 'helow-2d-sw-cache-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
